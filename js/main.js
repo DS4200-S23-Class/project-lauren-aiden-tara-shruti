@@ -145,7 +145,7 @@ d3.csv("data/SDSS.csv").then((data) => {
 
 
     // Adding bars
-  bars1 =  FRAME2.selectAll(".bar")
+    bars1 =  FRAME2.selectAll(".bar")
             .data(data)
             .enter()
             .append("rect")
@@ -156,6 +156,28 @@ d3.csv("data/SDSS.csv").then((data) => {
                 .attr("fill", (d) => { return color(d.class);})
                 .attr("opacity", 0.5)
                 .attr("class", "bar");
+
+    // // Tooltip for bar graph
+    // const TOOLTIP1 = d3.select("#bar")
+    //                     .append("div")
+    //                     .attr("class", "tooltip")
+    //                     .style("opacity", 0);
+
+    // // Show class of each bar and the amount of points selected with tooltip
+    // function handleMousemove(event, d) {
+    //     TOOLTIP1.html("Class: " + d.class + "<br>Amount Selected: " + ???) ISSUE
+    //             .style("left", (event.pageX + 10) + "px")                                          
+    //             .style("top", (event.pageY - 50) + "px"); 
+    // }
+
+    // function handleMouseleave(event, d) {
+    //     TOOLTIP1.style("opacity", 0);
+    // }
+
+    // FRAME2.selectAll(".bar")
+    //         .on("mousemove", handleMousemove)
+    //         .on("mouseleave", handleMouseleave); //add event listeners
+
 })};
 
 
