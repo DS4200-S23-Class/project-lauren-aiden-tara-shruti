@@ -41,15 +41,20 @@ function build_scatter() {
                         .domain([0, (MAX_Y1 + 1)]) 
                         .range([VIS_HEIGHT, 0]);
 
-    const color = d3.scaleSequential()
-    				.domain(d3.extent(data, d => d.color))
-   				 	.interpolator(d3.interpolateBlues);
+   // const color = d3.scaleSequential()
+    	//			.domain(d3.extent(data, d => d.color))
+   	//			 	.interpolator(d3.interpolateBlues);
+
+    const color = d3.scaleOrdinal()
+                  .domain(["STAR", "GALAXY", "QSO" ])
+                 .range([ "royalblue", "violet", "green"])
+
 
     // Add x axis
     FRAME1.append("g") 
             .attr("transform", "translate(" + MARGINS.left + 
                 "," + (VIS_HEIGHT + MARGINS.top) + ")") 
-            .call(d3.axisBottom(X_SCALE1).ticks(10)) 
+            .call(d3.axisBottom(X_SCALE1).ticks(5)) 
             .attr("font-size", '20px');
 
     // Add y axis 
@@ -66,10 +71,31 @@ function build_scatter() {
           .append("circle")  
             .attr("cx", (d) => { return (X_SCALE1(d.ra) + MARGINS.left); }) 
             .attr("cy", (d) => { return (Y_SCALE1(d.dec) + MARGINS.top); }) 
-            .attr("r", 4)
-            .attr("fill", d => color(d.color))
+            .attr("r", 3)
+            .attr("fill", d => color(d.class))
             .attr("opacity", 0.5)
             .attr("class", "point");})}
+
+
+  // Add brushing
+  //  FRAME2.call( d3.brush()                 // Add the brush feature using the d3.brush function
+ //           .extent( [ [0,0], [FRAME_WIDTH, FRAME_HEIGHT] ] ) // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
+ //           .on("start brush", updateChart) // Each time the brush selection changes, trigger the 'updateChart' function
+  //  )
+ // Function that is triggered when brushing is performed
+//    function updateChart(event) {
+ //       const extent = event.selection;
+ //       pts1.classed("selected", function(d){return isBrushed(extent, (X_SCALE1(d.ra) + MARGINS.left), (Y_SCALE1(d.dec) + MARGINS.top))})                                                      
+   //     bars1.classed("selected", function(d){return isBrushed(extent, (X_SCALE1(d.ra) + MARGINS.left), (Y_SCALE1(d.dec) + MARGINS.top))})     
+
+  // A function that return TRUE or FALSE according if a dot is in the selection or not
+ // function isBrushed(brush_coords, cx, cy) {
+  //     var x0 = brush_coords[0][0],
+  //         x1 = brush_coords[1][0],
+   //        y0 = brush_coords[0][1],
+  //         y1 = brush_coords[1][1];
+  //
+//})}
 
 build_scatter()
 
@@ -96,10 +122,9 @@ d3.csv("data/SDSS.csv").then((data) => {
                            .domain([0,100])
 
 
-    // const color = d3.scaleOrdinal()
-    //                 .domain(["setosa", "versicolor", "virginica" ])
-    //                 .range([ "royalblue", "violet", "green"])
-
+    const color = d3.scaleOrdinal()
+                  .domain(["STAR", "GALAXY", "QSO" ])
+                 .range([ "royalblue", "violet", "green"])
 
 
     // Adding X Axis 
@@ -126,7 +151,7 @@ d3.csv("data/SDSS.csv").then((data) => {
                 .attr("width", X_SCALE2.bandwidth())
                 .attr("y", (d) => {return Y_SCALE2(50) + MARGINS.top})
                 .attr("height", (d) => { return VIS_HEIGHT - Y_SCALE2(50)})
-                //.attr("fill", (d) => { return color(d.class);})
+                .attr("fill", (d) => { return color(d.class);})
                 .attr("opacity", 0.5)
                 .attr("class", "bar");
 })};
