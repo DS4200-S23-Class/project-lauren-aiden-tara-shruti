@@ -57,12 +57,29 @@ function build_scatter() {
             .call(d3.axisBottom(X_SCALE1).ticks(5)) 
             .attr("font-size", '20px');
 
+    // Text label for the x axis
+    FRAME1.append("text")             
+            .attr("transform",
+            "translate(" + (VIS_WIDTH/2) + " ," + 
+                           (VIS_HEIGHT + MARGINS.top + 20) + ")")
+            .style("text-anchor", "middle")
+            .text("declination");
+
     // Add y axis 
     FRAME1.append("g")
             .attr("transform", 
                 "translate(" + MARGINS.left + "," + (MARGINS.bottom) + ")")
             .call(d3.axisLeft(Y_SCALE1).ticks(10))
             .attr("font-size", "10px");
+
+    // Text label for the y axis
+    FRAME1.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 0 - MARGINS.left)
+      .attr("x",0 - (VIS_HEIGHT / 2))
+      .attr("dy", "1em")
+      .style("text-anchor", "middle")
+      .text("right-ascension");   
 
   	// Add points
     pts1 = FRAME1.selectAll("points")  
@@ -110,7 +127,7 @@ const FRAME2 = d3.select("#bar")
                     .attr("width", FRAME_WIDTH)
                     .attr("class", "frame"); 
 
-function build_bar(brushPoints = numBrushed) {
+function build_bar(/*brushPoints = numBrushed*/) {
 // Open file
 d3.csv("data/SDSS.csv").then((data) => {
 
