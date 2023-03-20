@@ -86,8 +86,8 @@ function build_scatter() {
  // Function that is triggered when brushing is performed
     function updateChart(event) {
         const extent = event.selection;
-        pts1.classed("selected", function(d){return isBrushed(extent, (X_SCALE1(d.ra) + MARGINS.left), (Y_SCALE1(d.dec) + MARGINS.top))})                                                      
-        bars1.classed("selected", function(d){return isBrushed(extent, (X_SCALE1(d.ra) + MARGINS.left), (Y_SCALE1(d.dec) + MARGINS.top))})};     
+        pts1.classed("selected", function(d){return isBrushed(extent, (X_SCALE1(d.dec) + MARGINS.left), (Y_SCALE1(d.ra) + MARGINS.top))})                                                      
+        bars1.classed("selected", function(d){return isBrushed(extent, (X_SCALE1(d.dec) + MARGINS.left), (Y_SCALE1(d.ra) + MARGINS.top))})};     
 
   // A function that return TRUE or FALSE according if a dot is in the selection or not
   function isBrushed(brush_coords, cx, cy) {
