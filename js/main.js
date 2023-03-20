@@ -30,51 +30,51 @@ function build_scatter() {
 
 
 
-    const MAX_X1 = d3.max(data, (d) => { return parseInt(d.ra); });
-    const MAX_Y1 = d3.max(data, (d) => { return parseInt(d.dec); });
-
+    const MAX_X1 = d3.max(data, (d) => { return parseInt(d.dec); });
+    const MAX_Y1 = d3.max(data, (d) => { return parseInt(d.ra); });
+  
     const X_SCALE1 = d3.scaleLinear() 
-                        .domain([0, (MAX_X1 + 1)]) 
+                        .domain([(-(MAX_X1) - 1), (MAX_X1 + 1)]) 
                         .range([0, VIS_WIDTH]);
-
+  
     const Y_SCALE1 = d3.scaleLinear() 
                         .domain([0, (MAX_Y1 + 1)]) 
                         .range([VIS_HEIGHT, 0]);
-
-   // const color = d3.scaleSequential()
-    	//			.domain(d3.extent(data, d => d.color))
-   	//			 	.interpolator(d3.interpolateBlues);
-
+  
+    // const color = d3.scaleSequential()
+    //      .domain(d3.extent(data, d => d.color))
+    //        .interpolator(d3.interpolateBlues);
+  
     const color = d3.scaleOrdinal()
-                  .domain(["STAR", "GALAXY", "QSO" ])
-                 .range([ "royalblue", "violet", "green"])
-
-
+                .domain(["STAR", "GALAXY", "QSO" ])
+                .range([ "royalblue", "violet", "green"])
+  
+  
     // Add x axis
     FRAME1.append("g") 
             .attr("transform", "translate(" + MARGINS.left + 
                 "," + (VIS_HEIGHT + MARGINS.top) + ")") 
-            .call(d3.axisBottom(X_SCALE1).ticks(5)) 
+            .call(d3.axisBottom(X_SCALE1).ticks(10)) 
             .attr("font-size", '20px');
-
+  
     // Add y axis 
     FRAME1.append("g")
             .attr("transform", 
                 "translate(" + MARGINS.left + "," + (MARGINS.bottom) + ")")
-            .call(d3.axisLeft(Y_SCALE1).ticks(10))
+            .call(d3.axisLeft(Y_SCALE1).ticks(5))
             .attr("font-size", "10px");
-
-  	// Add points
-   pts1 = FRAME1.selectAll("points")  
-          .data(data) 
-          .enter()       
-          .append("circle")  
-            .attr("cx", (d) => { return (X_SCALE1(d.ra) + MARGINS.left); }) 
-            .attr("cy", (d) => { return (Y_SCALE1(d.dec) + MARGINS.top); }) 
-            .attr("r", 3)
-            .attr("fill", d => color(d.class))
-            .attr("opacity", 0.5)
-            .attr("class", "point");
+  
+    // Add points
+    pts1 = FRAME1.selectAll("points")  
+            .data(data) 
+            .enter()       
+            .append("circle")  
+              .attr("cx", (d) => { return (X_SCALE1(d.dec) + MARGINS.left); }) 
+              .attr("cy", (d) => { return (Y_SCALE1(d.ra) + MARGINS.top); }) 
+              .attr("r", 3)
+              .attr("fill", d => color(d.class))
+              .attr("opacity", 0.5)
+              .attr("class", "point");
 
 
   // Add brushing
@@ -96,11 +96,9 @@ function build_scatter() {
            y0 = brush_coords[0][1],
            y1 = brush_coords[1][1];
       return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1};    // This return TRUE or FALSE depending on if the points is in the selected area
-  
-})};
+  })};
 
 build_scatter()
-
 
 
 // Bar graph 
