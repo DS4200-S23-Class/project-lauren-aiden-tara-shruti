@@ -65,7 +65,7 @@ function build_scatter() {
             .attr("font-size", "10px");
 
   	// Add points
-   pts1 = FRAME1.selectAll("points")  
+    pts1 = FRAME1.selectAll("points")  
           .data(data) 
           .enter()       
           .append("circle")  
@@ -77,26 +77,26 @@ function build_scatter() {
             .attr("class", "point");
 
 
-  // Add brushing
+    // Add brushing
     FRAME1.call( d3.brush()                 // Add the brush feature using the d3.brush function
             .extent( [ [0,0], [FRAME_WIDTH, FRAME_HEIGHT] ] ) // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
             .on("start brush", updateChart) // Each time the brush selection changes, trigger the 'updateChart' function
     )
 
- // Function that is triggered when brushing is performed
+    // Function that is triggered when brushing is performed
     function updateChart(event) {
         const extent = event.selection;
         pts1.classed("selected", function(d){return isBrushed(extent, (X_SCALE1(d.ra) + MARGINS.left), (Y_SCALE1(d.dec) + MARGINS.top))})                                                      
-        bars1.classed("selected", function(d){return isBrushed(extent, (X_SCALE1(d.ra) + MARGINS.left), (Y_SCALE2(d.dec) + MARGINS.top))})};     
+        bars1.classed("selected", function(d){return isBrushed(extent, (X_SCALE1(d.ra) + MARGINS.left), (Y_SCALE1(d.dec) + MARGINS.top))})};     
 
-  // A function that return TRUE or FALSE according if a dot is in the selection or not
-  function isBrushed(brush_coords, cx, cy) {
+    // A function that return TRUE or FALSE according if a dot is in the selection or not
+    function isBrushed(brush_coords, cx, cy) {
        var x0 = brush_coords[0][0],
            x1 = brush_coords[1][0],
            y0 = brush_coords[0][1],
            y1 = brush_coords[1][1];
       return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1};    // This return TRUE or FALSE depending on if the points is in the selected area
-  
+    // somehow store the cx and  cy of points that return TRUE, store them in numBrushed to be used for build_bar below
 })};
 
 build_scatter()
@@ -110,7 +110,7 @@ const FRAME2 = d3.select("#bar")
                     .attr("width", FRAME_WIDTH)
                     .attr("class", "frame"); 
 
-function build_bar() {
+function build_bar(brushPoints = numBrushed) {
 // Open file
 d3.csv("data/SDSS.csv").then((data) => {
 
@@ -142,6 +142,16 @@ d3.csv("data/SDSS.csv").then((data) => {
                 "translate(" + MARGINS.left + "," + (MARGINS.bottom) + ")")
             .call(d3.axisLeft(Y_SCALE2).ticks(2))
             .attr("font-size", "20px");
+
+      function brushed() {
+    var e = brush.extent(), selectedData;
+    if(dots) {
+      dots.each(function(d) { d.selected = false; });
+      selectedData = search(e[0][0], e[0][1], e[1][0], e[1][1]);
+      dots.classed('selected', function(d) { return d.selected; });
+    }
+    model.selectedData = brush.empty() ? model.data : selectedData;
+  }
 
 
     // Adding bars
