@@ -72,3 +72,68 @@ function build_scatter() {
             .attr("class", "point");})}
 
 build_scatter()
+
+
+
+// Bar graph 
+const FRAME2 = d3.select("#bar")
+                    .append("svg")
+                    .attr("height", FRAME_HEIGHT)
+                    .attr("width", FRAME_WIDTH)
+                    .attr("class", "frame"); 
+
+function build_bar() {
+// Open file
+d3.csv("data/SDSS.csv").then((data) => {
+
+    const X_SCALE2 = d3.scaleBand()
+                           .range([0, VIS_WIDTH])
+                           .domain(data.map((d) => {return d.class;}))
+                           .padding(.3);
+
+    const Y_SCALE2 = d3.scaleLinear()
+                           .range([VIS_HEIGHT, 0])
+                           .domain([0,100])
+
+
+    // const color = d3.scaleOrdinal()
+    //                 .domain(["setosa", "versicolor", "virginica" ])
+    //                 .range([ "royalblue", "violet", "green"])
+
+
+
+    // Adding X Axis 
+    FRAME2.append("g") 
+            .attr("transform", "translate(" + MARGINS.left + "," + 
+                (VIS_HEIGHT + MARGINS.top) + ")") 
+            .call(d3.axisBottom(X_SCALE2))
+            .attr("font-size", '20px'); 
+
+    // Adding Y Axis
+    FRAME2.append("g")
+            .attr("transform", 
+                "translate(" + MARGINS.left + "," + (MARGINS.bottom) + ")")
+            .call(d3.axisLeft(Y_SCALE2).ticks(2))
+            .attr("font-size", "20px");
+
+
+    // Adding bars
+  bars1 =  FRAME2.selectAll(".bar")
+            .data(data)
+            .enter()
+            .append("rect")
+                .attr("x", (d) => { return (X_SCALE2(d.class) + MARGINS.left); }) 
+                .attr("width", X_SCALE2.bandwidth())
+                .attr("y", (d) => {return Y_SCALE2(50) + MARGINS.top})
+                .attr("height", (d) => { return VIS_HEIGHT - Y_SCALE2(50)})
+                //.attr("fill", (d) => { return color(d.class);})
+                .attr("opacity", 0.5)
+                .attr("class", "bar");
+})};
+
+
+build_bar()
+
+
+
+
