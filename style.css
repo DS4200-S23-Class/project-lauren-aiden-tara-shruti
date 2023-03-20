@@ -19,3 +19,9 @@ h1 {
 .right {
   width: 50%;
 }
+
+.selected {
+  opacity: 1;
+  stroke: black;
+  stroke-width: 1px;
+}
