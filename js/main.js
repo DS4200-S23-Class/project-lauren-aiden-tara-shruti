@@ -60,7 +60,7 @@ function build_scatter() {
     // Add y axis 
     FRAME1.append("g")
             .attr("transform", 
-                "translate(" + MARGINS.left + "," + (MARGINS.bottom) + ")")
+                "translate(" + (X_SCALE1(0) + MARGINS.left) + "," + (MARGINS.bottom) + ")")
             .call(d3.axisLeft(Y_SCALE1).ticks(5))
             .attr("font-size", "10px");
 
