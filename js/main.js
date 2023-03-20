@@ -1,8 +1,8 @@
 // Display Data
 function displayData() {
     // Read data 
-    d3.csv("data/SDSS2.csv").then((data) => {
-  
+    d3.csv("data/SDSS2.csv", fileEncoding="UTF-8-BOM").then((data) => {
+    
       // check for our data
       console.log(data);
     })}
@@ -26,8 +26,7 @@ const FRAME1 = d3.select("#scatter")
  
 function build_scatter() {
   // Open file
-  d3.csv("data/SDSS.csv").then((data) => { 
-
+  d3.csv("data/SDSS2.csv").then((data) => { 
 
 
     const MAX_X1 = d3.max(data, (d) => { return parseInt(d.dec); });
@@ -48,7 +47,6 @@ function build_scatter() {
     const color = d3.scaleOrdinal()
                 .domain(["STAR", "GALAXY", "QSO" ])
                 .range([ "royalblue", "violet", "green"])
-  
   
     // Add x axis
     FRAME1.append("g") 
@@ -75,7 +73,6 @@ function build_scatter() {
               .attr("fill", d => color(d.class))
               .attr("opacity", 0.5)
               .attr("class", "point");
-
 
   // Add brushing
     FRAME1.call( d3.brush()                 // Add the brush feature using the d3.brush function
@@ -110,7 +107,7 @@ const FRAME2 = d3.select("#bar")
 
 function build_bar() {
 // Open file
-d3.csv("data/SDSS.csv").then((data) => {
+d3.csv("data/SDSS2.csv").then((data) => {
 
     const X_SCALE2 = d3.scaleBand()
                            .range([0, VIS_WIDTH])
