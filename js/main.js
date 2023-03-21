@@ -9,6 +9,26 @@ function displayData() {
 
 displayData()
 
+// save multiple select options in an array
+function getSelectedOptions() {
+  const selectElement = document.getElementById("class");
+  const selectedOptions = selectElement.selectedOptions;
+  elems = [];
+  for (let i = 0; i < selectedOptions.length; i++) {
+    const optionValue = selectedOptions[i].value;
+    console.log(optionValue);
+    elems.push(optionValue);}
+  return elems;
+  console.log(elems);
+}
+
+
+const button = document.querySelector('#submit-button');
+//button.addEventListener('click', getSelectedOptions)
+console.log(button.addEventListener('click', getSelectedOptions))
+
+
+
 // Constants for visualizations
 const FRAME_HEIGHT = 300;
 const FRAME_WIDTH = 450; 
@@ -31,7 +51,7 @@ function build_scatter() {
      // create submit button for x and y coordinate input
      submit_button = d3.select("#submit-button");
      submit_button
-       .on("click", function(){
+       .on("click", function click(){
        
        space_class = d3.select("#class").property("value");
      
@@ -73,7 +93,7 @@ function build_scatter() {
           "translate(" + (X_SCALE1(0) + MARGINS.left) + "," + (MARGINS.bottom) + ")")
       .call(d3.axisLeft(Y_SCALE1).ticks(5))
       .attr("font-size", "10px");
-      
+
     // Add points
     pts1 = FRAME1.selectAll("points")  
             .data(filteredData) 
@@ -92,32 +112,36 @@ function build_scatter() {
             .on("start brush", updateChart) // Each time the brush selection changes, trigger the 'updateChart' function
     )
 
- // Function that is triggered when brushing is performed
-    function updateChart(event) {
-        const extent = event.selection;
-        pts1.classed("selected", function(d){return isBrushed(extent, (X_SCALE1(d.dec) + MARGINS.left), (Y_SCALE1(d.ra) + MARGINS.top))})                                                      
-        bars1.classed("selected", function(d){return isBrushed(extent, (X_SCALE1(d.dec) + MARGINS.left), (Y_SCALE1(d.ra) + MARGINS.top))})};     
+//  // Function that is triggered when brushing is performed
+//     function updateChart(event) {
+//         const extent = event.selection;
+//         pts1.classed("selected", function(d){return isBrushed(extent, (X_SCALE1(d.dec) + MARGINS.left), (Y_SCALE1(d.ra) + MARGINS.top))})                                                      
+//         bars1.classed("selected", function(d){return isBrushed(extent, (X_SCALE1(d.dec) + MARGINS.left), (Y_SCALE1(d.ra) + MARGINS.top))})};     
 
-  // A function that return TRUE or FALSE according if a dot is in the selection or not
-  function isBrushed(brush_coords, cx, cy) {
-       var x0 = brush_coords[0][0],
-           x1 = brush_coords[1][0],
-           y0 = brush_coords[0][1],
-           y1 = brush_coords[1][1];
-      return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1};    // This return TRUE or FALSE depending on if the points is in the selected area
-  })}
-)}
-build_scatter()
+  // // A function that return TRUE or FALSE according if a dot is in the selection or not
+  // function isBrushed(brush_coords, cx, cy) {
+  //      var x0 = brush_coords[0][0],
+  //          x1 = brush_coords[1][0],
+  //          y0 = brush_coords[0][1],
+  //          y1 = brush_coords[1][1];
+  //     return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1};    // This return TRUE or FALSE depending on if the points is in the selected area
+  return space_class;
+})
 
+}) 
 
-// Bar graph 
+}
+space_class = build_scatter()
+//console.log(space_class)
+
+//Bar graph 
 const FRAME2 = d3.select("#bar")
                     .append("svg")
                     .attr("height", FRAME_HEIGHT)
                     .attr("width", FRAME_WIDTH)
                     .attr("class", "frame"); 
 
-function build_bar() {
+function build_bar(space_class) {
 // Open file
 d3.csv("data/SDSS2.csv").then((data) => {
 
@@ -159,7 +183,7 @@ d3.csv("data/SDSS2.csv").then((data) => {
                 .attr("x", (d) => { return (X_SCALE2(d.class) + MARGINS.left); }) 
                 .attr("width", X_SCALE2.bandwidth())
                 .attr("y", (d) => {return Y_SCALE2(50) + MARGINS.top})
-                .attr("height", (d) => { return VIS_HEIGHT - Y_SCALE2(50)})
+                .attr("height", (d) => {return VIS_HEIGHT - Y_SCALE2(50)})
                 .attr("fill", (d) => { return color(d.class);})
                 .attr("opacity", 0.5)
                 .attr("class", "bar");
@@ -184,11 +208,11 @@ d3.csv("data/SDSS2.csv").then((data) => {
     // FRAME2.selectAll(".bar")
     //         .on("mousemove", handleMousemove)
     //         .on("mouseleave", handleMouseleave); //add event listeners
+})}
 
-})};
+//console.log(space_class)
 
-
-build_bar()
+build_bar(space_class)
 
 
 
