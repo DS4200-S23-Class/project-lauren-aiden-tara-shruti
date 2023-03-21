@@ -3,7 +3,6 @@ function displayData() {
     // Read data 
     d3.csv("data/SDSS2.csv", fileEncoding="UTF-8-BOM").then((data) => {
     
-
       // check for our data
       console.log(data);
     })}
@@ -62,79 +61,25 @@ function build_scatter() {
      
      console.log(filteredData) 
 
-    const MAX_X1 = d3.max(data, (d) => { return parseInt(d.ra); });
-    const MAX_Y1 = d3.max(data, (d) => { return parseInt(d.dec); });
-
+    const MAX_X1 = d3.max(data, (d) => { return parseInt(d.dec); });
+    const MAX_Y1 = d3.max(data, (d) => { return parseInt(d.ra); });
+  
     const X_SCALE1 = d3.scaleLinear() 
-                        .domain([0, (MAX_X1 + 1)]) 
+                        .domain([(-(MAX_X1) - 1), (MAX_X1 + 1)]) 
                         .range([0, VIS_WIDTH]);
-
+  
     const Y_SCALE1 = d3.scaleLinear() 
                         .domain([0, (MAX_Y1 + 1)]) 
                         .range([VIS_HEIGHT, 0]);
-
-   // const color = d3.scaleSequential()
-    	//			.domain(d3.extent(data, d => d.color))
-   	//			 	.interpolator(d3.interpolateBlues);
-
+  
+    // const color = d3.scaleSequential()
+    //      .domain(d3.extent(data, d => d.color))
+    //        .interpolator(d3.interpolateBlues);
+  
     const color = d3.scaleOrdinal()
-
-                  .domain(["STAR", "GALAXY", "QSO" ])
-                 .range([ "royalblue", "violet", "green"])
-
-
-
                 .domain(["STAR", "GALAXY", "QSO" ])
                 .range([ "royalblue", "violet", "green"])
-
-
-    // Add x axis
-    FRAME1.append("g") 
-            .attr("transform", "translate(" + MARGINS.left + 
-                "," + (VIS_HEIGHT + MARGINS.top) + ")") 
-            .call(d3.axisBottom(X_SCALE1).ticks(5)) 
-            .attr("font-size", '20px');
-
-    // Text label for the x axis
-    FRAME1.append("text")             
-            .attr("transform",
-            "translate(" + (VIS_WIDTH/2) + " ," + 
-                           (VIS_HEIGHT + MARGINS.top + 20) + ")")
-            .style("text-anchor", "middle")
-            .text("Declination");
-
-    // Add y axis 
-    FRAME1.append("g")
-            .attr("transform", 
-                "translate(" + MARGINS.left + "," + (MARGINS.bottom) + ")")
-            .call(d3.axisLeft(Y_SCALE1).ticks(10))
-            .attr("font-size", "10px");
-
-    // Text label for the y axis
-    FRAME1.append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 0 - MARGINS.left)
-      .attr("x",0 - (VIS_HEIGHT / 2))
-      .attr("dy", "1em")
-      .style("text-anchor", "middle")
-      .text("right-ascension");   
-
-  	// Add points
-    pts1 = FRAME1.selectAll("points")  
-          .data(data) 
-          .enter()       
-          .append("circle")  
-            .attr("cx", (d) => { return (X_SCALE1(d.ra) + MARGINS.left); }) 
-            .attr("cy", (d) => { return (Y_SCALE1(d.dec) + MARGINS.top); }) 
-            .attr("r", 3)
-            .attr("fill", d => color(d.class))
-            .attr("opacity", 0.5)
-            .attr("class", "point");
-
-
-
-    // Add brushing
-
+  
       // Add x axis
       FRAME1.append("g") 
       .attr("transform", "translate(" + MARGINS.left + 
@@ -161,15 +106,12 @@ function build_scatter() {
               .attr("opacity", 0.5)
               .attr("class", "point");
 
-
   // Add brushing
-
     FRAME1.call( d3.brush()                 // Add the brush feature using the d3.brush function
             .extent( [ [0,0], [FRAME_WIDTH, FRAME_HEIGHT] ] ) // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
             .on("start brush", updateChart) // Each time the brush selection changes, trigger the 'updateChart' function
     )
 
-<<<<<<< HEAD
 //  // Function that is triggered when brushing is performed
 //     function updateChart(event) {
 //         const extent = event.selection;
@@ -185,52 +127,21 @@ function build_scatter() {
   //     return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1};    // This return TRUE or FALSE depending on if the points is in the selected area
   return space_class;
 })
-=======
-    // Function that is triggered when brushing is performed
-    function updateChart(event) {
-        const extent = event.selection;
-        pts1.classed("selected", function(d){return isBrushed(extent, (X_SCALE1(d.ra) + MARGINS.left), (Y_SCALE1(d.dec) + MARGINS.top))})                                                      
-        bars1.classed("selected", function(d){return isBrushed(extent, (X_SCALE1(d.ra) + MARGINS.left), (Y_SCALE1(d.dec) + MARGINS.top))})};     
-
-    // A function that return TRUE or FALSE according if a dot is in the selection or not
-    function isBrushed(brush_coords, cx, cy) {
-       var x0 = brush_coords[0][0],
-           x1 = brush_coords[1][0],
-           y0 = brush_coords[0][1],
-           y1 = brush_coords[1][1];
-      return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1};    // This return TRUE or FALSE depending on if the points is in the selected area
-
-    // somehow store the cx and  cy of points that return TRUE, store them in numBrushed to be used for build_bar below
-})};
-
-
-
-build_scatter()
->>>>>>> 90e3b1f35c3799c5c35ccda6df564d2bbc9f0cc2
 
 }) 
 
-<<<<<<< HEAD
 }
 space_class = build_scatter()
 //console.log(space_class)
 
 //Bar graph 
-=======
-
-// Bar graph 
->>>>>>> 90e3b1f35c3799c5c35ccda6df564d2bbc9f0cc2
 const FRAME2 = d3.select("#bar")
                     .append("svg")
                     .attr("height", FRAME_HEIGHT)
                     .attr("width", FRAME_WIDTH)
                     .attr("class", "frame"); 
 
-<<<<<<< HEAD
 function build_bar(space_class) {
-=======
-function build_bar(/*brushPoints = numBrushed*/) {
->>>>>>> 90e3b1f35c3799c5c35ccda6df564d2bbc9f0cc2
 // Open file
 d3.csv("data/SDSS2.csv").then((data) => {
 
@@ -262,16 +173,6 @@ d3.csv("data/SDSS2.csv").then((data) => {
                 "translate(" + MARGINS.left + "," + (MARGINS.bottom) + ")")
             .call(d3.axisLeft(Y_SCALE2).ticks(2))
             .attr("font-size", "20px");
-
-      function brushed() {
-    var e = brush.extent(), selectedData;
-    if(dots) {
-      dots.each(function(d) { d.selected = false; });
-      selectedData = search(e[0][0], e[0][1], e[1][0], e[1][1]);
-      dots.classed('selected', function(d) { return d.selected; });
-    }
-    model.selectedData = brush.empty() ? model.data : selectedData;
-  }
 
 
     // Adding bars
