@@ -63,7 +63,7 @@ function build_scatter() {
             "translate(" + (VIS_WIDTH/2) + " ," + 
                            (VIS_HEIGHT + MARGINS.top + 20) + ")")
             .style("text-anchor", "middle")
-            .text("declination");
+            .text("Declination");
 
     // Add y axis 
     FRAME1.append("g")
