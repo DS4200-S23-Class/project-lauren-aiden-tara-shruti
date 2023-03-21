@@ -29,6 +29,18 @@ function build_scatter() {
   // Open file
   d3.csv("data/SDSS2.csv").then((data) => { 
 
+     // create submit button for x and y coordinate input
+     submit_button = d3.select("#submit-button");
+     submit_button
+       .on("click", function(){
+       
+       space_class = d3.select("#class").property("value");
+     
+ 
+     filteredData = data.filter(function(row) {
+       return row['class'] == space_class});
+     
+     console.log(filteredData) 
 
     const MAX_X1 = d3.max(data, (d) => { return parseInt(d.ra); });
     const MAX_Y1 = d3.max(data, (d) => { return parseInt(d.dec); });
@@ -54,7 +66,7 @@ function build_scatter() {
 
                 .domain(["STAR", "GALAXY", "QSO" ])
                 .range([ "royalblue", "violet", "green"])
-  
+
 
     // Add x axis
     FRAME1.append("g") 
@@ -103,6 +115,33 @@ function build_scatter() {
 
     // Add brushing
 
+      // Add x axis
+      FRAME1.append("g") 
+      .attr("transform", "translate(" + MARGINS.left + 
+          "," + (VIS_HEIGHT + MARGINS.top) + ")") 
+      .call(d3.axisBottom(X_SCALE1).ticks(10)) 
+      .attr("font-size", '20px');
+
+      // Add y axis 
+      FRAME1.append("g")
+      .attr("transform", 
+          "translate(" + (X_SCALE1(0) + MARGINS.left) + "," + (MARGINS.bottom) + ")")
+      .call(d3.axisLeft(Y_SCALE1).ticks(5))
+      .attr("font-size", "10px");
+      
+    // Add points
+    pts1 = FRAME1.selectAll("points")  
+            .data(filteredData) 
+            .enter()       
+            .append("circle")  
+              .attr("cx", (d) => { return (X_SCALE1(d.dec) + MARGINS.left); }) 
+              .attr("cy", (d) => { return (Y_SCALE1(d.ra) + MARGINS.top); }) 
+              .attr("r", 3)
+              .attr("fill", d => color(d.class))
+              .attr("opacity", 0.5)
+              .attr("class", "point");
+
+
   // Add brushing
 
     FRAME1.call( d3.brush()                 // Add the brush feature using the d3.brush function
@@ -123,8 +162,11 @@ function build_scatter() {
            y0 = brush_coords[0][1],
            y1 = brush_coords[1][1];
       return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1};    // This return TRUE or FALSE depending on if the points is in the selected area
+
     // somehow store the cx and  cy of points that return TRUE, store them in numBrushed to be used for build_bar below
 })};
+
+
 
 build_scatter()
 
