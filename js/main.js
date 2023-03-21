@@ -84,14 +84,16 @@ function build_scatter() {
       FRAME1.append("g") 
       .attr("transform", "translate(" + MARGINS.left + 
           "," + (VIS_HEIGHT + MARGINS.top) + ")") 
-      .call(d3.axisBottom(X_SCALE1).ticks(10)) 
-      .attr("font-size", '20px');
+      .call(d3.axisBottom(X_SCALE1).tickValues([-2.0, -1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5, 2.0])
+                                   .tickFormat((d, i) => [-2.0, -1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5, 2.0] [i])) 
+      .attr("font-size", '10px');
 
       // Add y axis 
       FRAME1.append("g")
       .attr("transform", 
           "translate(" + (X_SCALE1(0) + MARGINS.left) + "," + (MARGINS.bottom) + ")")
-      .call(d3.axisLeft(Y_SCALE1).ticks(5))
+      .call(d3.axisLeft(Y_SCALE1).tickValues([0, 50, 100, 150, 200, 245])
+                                 .tickFormat((d, i) => [0, 50, 100, 150, 200, 245] [i])) 
       .attr("font-size", "10px");
 
     // Add points
