@@ -112,19 +112,19 @@ function build_scatter() {
             .on("start brush", updateChart) // Each time the brush selection changes, trigger the 'updateChart' function
     )
 
-//  // Function that is triggered when brushing is performed
-//     function updateChart(event) {
-//         const extent = event.selection;
-//         pts1.classed("selected", function(d){return isBrushed(extent, (X_SCALE1(d.dec) + MARGINS.left), (Y_SCALE1(d.ra) + MARGINS.top))})                                                      
-//         bars1.classed("selected", function(d){return isBrushed(extent, (X_SCALE1(d.dec) + MARGINS.left), (Y_SCALE1(d.ra) + MARGINS.top))})};     
+  //Function that is triggered when brushing is performed
+   function updateChart(event) {
+         const extent = event.selection;
+        pts1.classed("selected", function(d){return isBrushed(extent, (X_SCALE1(d.dec) + MARGINS.left), (Y_SCALE1(d.ra) + MARGINS.top))})                                                      
+       bars1.classed("selected", function(d){return isBrushed(extent, (X_SCALE1(d.dec) + MARGINS.left), (Y_SCALE1(d.ra) + MARGINS.top))})};     
 
-  // // A function that return TRUE or FALSE according if a dot is in the selection or not
-  // function isBrushed(brush_coords, cx, cy) {
-  //      var x0 = brush_coords[0][0],
-  //          x1 = brush_coords[1][0],
-  //          y0 = brush_coords[0][1],
-  //          y1 = brush_coords[1][1];
-  //     return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1};    // This return TRUE or FALSE depending on if the points is in the selected area
+  // A function that return TRUE or FALSE according if a dot is in the selection or not
+   function isBrushed(brush_coords, cx, cy) {
+       var x0 = brush_coords[0][0],
+          x1 = brush_coords[1][0],
+          y0 = brush_coords[0][1],
+           y1 = brush_coords[1][1];
+      return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1};    // This return TRUE or FALSE depending on if the points is in the selected area
   return space_class;
 })
 
