@@ -1,8 +1,9 @@
 // Display Data
 function displayData() {
     // Read data 
-    d3.csv("data/SDSS.csv").then((data) => {
-  
+    d3.csv("data/SDSS2.csv", fileEncoding="UTF-8-BOM").then((data) => {
+    
+
       // check for our data
       console.log(data);
     })}
@@ -26,8 +27,7 @@ const FRAME1 = d3.select("#scatter")
  
 function build_scatter() {
   // Open file
-  d3.csv("data/SDSS.csv").then((data) => { 
-
+  d3.csv("data/SDSS2.csv").then((data) => { 
 
 
     const MAX_X1 = d3.max(data, (d) => { return parseInt(d.ra); });
@@ -46,9 +46,15 @@ function build_scatter() {
    	//			 	.interpolator(d3.interpolateBlues);
 
     const color = d3.scaleOrdinal()
+
                   .domain(["STAR", "GALAXY", "QSO" ])
                  .range([ "royalblue", "violet", "green"])
 
+
+
+                .domain(["STAR", "GALAXY", "QSO" ])
+                .range([ "royalblue", "violet", "green"])
+  
 
     // Add x axis
     FRAME1.append("g") 
@@ -94,7 +100,11 @@ function build_scatter() {
             .attr("class", "point");
 
 
+
     // Add brushing
+
+  // Add brushing
+
     FRAME1.call( d3.brush()                 // Add the brush feature using the d3.brush function
             .extent( [ [0,0], [FRAME_WIDTH, FRAME_HEIGHT] ] ) // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
             .on("start brush", updateChart) // Each time the brush selection changes, trigger the 'updateChart' function
@@ -129,7 +139,7 @@ const FRAME2 = d3.select("#bar")
 
 function build_bar(/*brushPoints = numBrushed*/) {
 // Open file
-d3.csv("data/SDSS.csv").then((data) => {
+d3.csv("data/SDSS2.csv").then((data) => {
 
     const X_SCALE2 = d3.scaleBand()
                            .range([0, VIS_WIDTH])
