@@ -28,6 +28,18 @@ function build_scatter() {
   // Open file
   d3.csv("data/SDSS2.csv").then((data) => { 
 
+     // create submit button for x and y coordinate input
+     submit_button = d3.select("#submit-button");
+     submit_button
+       .on("click", function(){
+       
+       space_class = d3.select("#class").property("value");
+     
+ 
+     filteredData = data.filter(function(row) {
+       return row['class'] == space_class});
+     
+     console.log(filteredData) 
 
     const MAX_X1 = d3.max(data, (d) => { return parseInt(d.dec); });
     const MAX_Y1 = d3.max(data, (d) => { return parseInt(d.ra); });
@@ -48,23 +60,23 @@ function build_scatter() {
                 .domain(["STAR", "GALAXY", "QSO" ])
                 .range([ "royalblue", "violet", "green"])
   
-    // Add x axis
-    FRAME1.append("g") 
-            .attr("transform", "translate(" + MARGINS.left + 
-                "," + (VIS_HEIGHT + MARGINS.top) + ")") 
-            .call(d3.axisBottom(X_SCALE1).ticks(10)) 
-            .attr("font-size", '20px');
-  
-    // Add y axis 
-    FRAME1.append("g")
-            .attr("transform", 
-                "translate(" + (X_SCALE1(0) + MARGINS.left) + "," + (MARGINS.bottom) + ")")
-            .call(d3.axisLeft(Y_SCALE1).ticks(5))
-            .attr("font-size", "10px");
+      // Add x axis
+      FRAME1.append("g") 
+      .attr("transform", "translate(" + MARGINS.left + 
+          "," + (VIS_HEIGHT + MARGINS.top) + ")") 
+      .call(d3.axisBottom(X_SCALE1).ticks(10)) 
+      .attr("font-size", '20px');
 
+      // Add y axis 
+      FRAME1.append("g")
+      .attr("transform", 
+          "translate(" + (X_SCALE1(0) + MARGINS.left) + "," + (MARGINS.bottom) + ")")
+      .call(d3.axisLeft(Y_SCALE1).ticks(5))
+      .attr("font-size", "10px");
+      
     // Add points
     pts1 = FRAME1.selectAll("points")  
-            .data(data) 
+            .data(filteredData) 
             .enter()       
             .append("circle")  
               .attr("cx", (d) => { return (X_SCALE1(d.dec) + MARGINS.left); }) 
@@ -93,8 +105,8 @@ function build_scatter() {
            y0 = brush_coords[0][1],
            y1 = brush_coords[1][1];
       return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1};    // This return TRUE or FALSE depending on if the points is in the selected area
-  })};
-
+  })}
+)}
 build_scatter()
 
 
