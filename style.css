@@ -22,6 +22,7 @@ h1 {
 
 .selected {
   opacity: 1;
+  fill: orange;
   stroke: black;
   stroke-width: 1px;
 }
