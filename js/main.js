@@ -9,26 +9,6 @@ function displayData() {
 
 displayData()
 
-// save multiple select options in an array
-function getSelectedOptions() {
-  const selectElement = document.getElementById("class");
-  const selectedOptions = selectElement.selectedOptions;
-  elems = [];
-  for (let i = 0; i < selectedOptions.length; i++) {
-    const optionValue = selectedOptions[i].value;
-    console.log(optionValue);
-    elems.push(optionValue);}
-  return elems;
-  console.log(elems);
-  console.log(elems.getAttribute("class"))
-}
-
-
-const button = document.querySelector('#submit-button');
-//button.addEventListener('click', getSelectedOptions)
-console.log(button.addEventListener('click', getSelectedOptions))
-
-
 
 // Constants for visualizations
 const FRAME_HEIGHT = 300;
@@ -47,20 +27,8 @@ const FRAME1 = d3.select("#scatter")
  
 function build_scatter() {
   // Open file
-  d3.csv("data/SDSS2.csv").then((data) => { 
-
-     // create submit button for x and y coordinate input
-     submit_button = d3.select("#submit-button");
-     submit_button
-       .on("click", function click(){
-       
-       space_class = d3.select("#class").property("value");
-     
- 
-     filteredData = data.filter(function(row) {
-       return row['class'] == space_class});
-     
-     console.log(filteredData) 
+  d3.csv("data/SDSS2.csv").then((data) => {
+    
 
     const MAX_X1 = d3.max(data, (d) => { return parseInt(d.dec); });
     const MAX_Y1 = d3.max(data, (d) => { return parseInt(d.ra); });
@@ -73,9 +41,6 @@ function build_scatter() {
                         .domain([0, (MAX_Y1 + 1)]) 
                         .range([VIS_HEIGHT, 0]);
   
-    // const color = d3.scaleSequential()
-    //      .domain(d3.extent(data, d => d.color))
-    //        .interpolator(d3.interpolateBlues);
   
     const color = d3.scaleOrdinal()
                 .domain(["STAR", "GALAXY", "QSO" ])
@@ -89,6 +54,13 @@ function build_scatter() {
                                    .tickFormat((d, i) => [-2.0, -1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5, 2.0] [i])) 
       .attr("font-size", '10px');
 
+      // x-axis label
+    FRAME1.append("text")
+            .attr("text-anchor", "end")
+            .attr("x", VIS_WIDTH)
+            .attr("y", VIS_HEIGHT + MARGINS.top)
+            .text("X axis title");
+
       // Add y axis 
       FRAME1.append("g")
       .attr("transform", 
@@ -97,9 +69,17 @@ function build_scatter() {
                                  .tickFormat((d, i) => [0, 50, 100, 150, 200, 245] [i])) 
       .attr("font-size", "10px");
 
+    // y-axis label
+    FRAME1.append("text")
+            .attr("text-anchor", "end")
+            .attr("transform", "rotate(-90)")
+            .attr("y", -MARGINS.left)
+            .attr("x", -MARGINS.top)
+            .text("Y axis title")
+
     // Add points
     pts1 = FRAME1.selectAll("points")  
-            .data(filteredData) 
+            .data(data) 
             .enter()       
             .append("circle")  
               .attr("cx", (d) => { return (X_SCALE1(d.dec) + MARGINS.left); }) 
@@ -128,14 +108,9 @@ function build_scatter() {
           y0 = brush_coords[0][1],
            y1 = brush_coords[1][1];
       return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1};    // This return TRUE or FALSE depending on if the points is in the selected area
-  return space_class;
-})
+})};
 
-}) 
-
-}
-space_class = build_scatter()
-//console.log(space_class)
+build_scatter()
 
 //Bar graph 
 const FRAME2 = d3.select("#bar")
@@ -144,7 +119,7 @@ const FRAME2 = d3.select("#bar")
                     .attr("width", FRAME_WIDTH)
                     .attr("class", "frame"); 
 
-function build_bar(space_class) {
+function build_bar() {
 // Open file
 d3.csv("data/SDSS2.csv").then((data) => {
 
@@ -177,7 +152,7 @@ d3.csv("data/SDSS2.csv").then((data) => {
             .call(d3.axisLeft(Y_SCALE2).ticks(2))
             .attr("font-size", "20px");
 
- 
+
     // Adding bars
     bars1 =  FRAME2.selectAll(".bar")
             .data(data)
@@ -211,11 +186,12 @@ d3.csv("data/SDSS2.csv").then((data) => {
     // FRAME2.selectAll(".bar")
     //         .on("mousemove", handleMousemove)
     //         .on("mouseleave", handleMouseleave); //add event listeners
-})}
+})};
 
 //console.log(space_class)
 
-build_bar(space_class)
+build_bar()
+
 
 
 
