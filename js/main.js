@@ -9,25 +9,23 @@ function displayData() {
 
 displayData()
 
+let elems = [];
+button = document.querySelector('#submit-button');
+button.addEventListener('click', getSelectedOptions)
+
+
 // save multiple select options in an array
 function getSelectedOptions() {
   const selectElement = document.getElementById("class");
   const selectedOptions = selectElement.selectedOptions;
-  elems = [];
+  elems.length = 0;
   for (let i = 0; i < selectedOptions.length; i++) {
     const optionValue = selectedOptions[i].value;
-    console.log(optionValue);
-    elems.push(optionValue);}
-  return elems;
-  console.log(elems);
+    elems.push(optionValue);
+     }
 }
 
-
-const button = document.querySelector('#submit-button');
-//button.addEventListener('click', getSelectedOptions)
-console.log(button.addEventListener('click', getSelectedOptions))
-
-
+console.log(elems)
 
 // Constants for visualizations
 const FRAME_HEIGHT = 300;
@@ -44,20 +42,20 @@ const FRAME1 = d3.select("#scatter")
                     .attr("width", FRAME_WIDTH)
                     .attr("class", "frame"); 
  
-function build_scatter() {
+function build_scatter(options) {
   // Open file
-  d3.csv("data/SDSS2.csv").then((data) => { 
-
-     // create submit button for x and y coordinate input
-     submit_button = d3.select("#submit-button");
-     submit_button
-       .on("click", function click(){
-       
-       space_class = d3.select("#class").property("value");
-     
- 
-     filteredData = data.filter(function(row) {
-       return row['class'] == space_class});
+  d3.csv("data/SDSS2.csv").then((data) => {
+    
+    console.log(data)
+    console.log(options)
+    
+    edit_data = []
+    filteredData = data.filter(function(row) {
+    for (let i = 0; i < options.length; i++) {
+      if (row['class'] == options[i])
+        edit_data.push(options[i])} 
+      console.log(edit_data)
+    });
      
      console.log(filteredData) 
 
@@ -127,13 +125,10 @@ function build_scatter() {
           y0 = brush_coords[0][1],
            y1 = brush_coords[1][1];
       return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1};    // This return TRUE or FALSE depending on if the points is in the selected area
-  return space_class;
 })
 
-}) 
-
 }
-space_class = build_scatter()
+build_scatter(elems)
 //console.log(space_class)
 
 //Bar graph 
