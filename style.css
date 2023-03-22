@@ -20,15 +20,8 @@ h1 {
   width: 50%;
 }
 
-.selected1 {
-  opacity: 1;
-  fill: yellow;
-  stroke: black;
-  stroke-width: 1px;
-}
 
-
-.selected1 {
+.selected {
   opacity: 1;
   stroke: black;
   stroke-width: 1px;
