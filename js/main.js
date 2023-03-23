@@ -9,21 +9,33 @@ function displayData() {
 
 displayData()
 
-let elems = [];
+let elems = []
 button = document.querySelector('#submit-button');
-button.addEventListener('click', getSelectedOptions)
+button.addEventListener('click', setSelectedOptions);
 
-
-// save multiple select options in an array
-function getSelectedOptions() {
-  const selectElement = document.getElementById("class");
+function setSelectedOptions (){
+  const selectElement = document.getElementById("selectId");
   const selectedOptions = selectElement.selectedOptions;
   elems.length = 0;
   for (let i = 0; i < selectedOptions.length; i++) {
     const optionValue = selectedOptions[i].value;
     elems.push(optionValue);
-     }
+  }
+  build_scatter(elems);
+  build_bar(elems);
 }
+
+
+// // save multiple select options in an array
+// function getSelectedOptions() {
+//   const selectElement = document.getElementById("selectId");
+//   const selectedOptions = selectElement.selectedOptions;
+//   elems.length = 0;
+//   for (let i = 0; i < selectedOptions.length; i++) {
+//     const optionValue = selectedOptions[i].value;
+//     elems.push(optionValue);
+//   }
+// }
 
 console.log(elems)
 
@@ -43,21 +55,20 @@ const FRAME1 = d3.select("#scatter")
                     .attr("class", "frame"); 
  
 function build_scatter(options) {
+  console.log(options)
   // Open file
   d3.csv("data/SDSS2.csv").then((data) => {
     
-    console.log(data)
-    console.log(options)
-    
-    edit_data = []
-    filteredData = data.filter(function(row) {
+    // console.log(options[0])
+    console.log(data);
+    filteredData = []
     for (let i = 0; i < options.length; i++) {
-      if (row['class'] == options[i])
-        edit_data.push(options[i])} 
-      console.log(edit_data)
-    });
-     
-     console.log(filteredData) 
+      const option = options[i]
+      const filtered = data.filter(function(row) {
+        return row['class'] === option
+      })
+      filteredData.push(...filtered)
+    }
 
     const MAX_X1 = d3.max(data, (d) => { return parseInt(d.dec); });
     const MAX_Y1 = d3.max(data, (d) => { return parseInt(d.ra); });
@@ -129,7 +140,6 @@ function build_scatter(options) {
 
 }
 build_scatter(elems)
-//console.log(space_class)
 
 //Bar graph 
 const FRAME2 = d3.select("#bar")
@@ -138,9 +148,20 @@ const FRAME2 = d3.select("#bar")
                     .attr("width", FRAME_WIDTH)
                     .attr("class", "frame"); 
 
-function build_bar(space_class) {
+function build_bar(elems) {
 // Open file
 d3.csv("data/SDSS2.csv").then((data) => {
+
+  filteredData = []
+    for (let i = 0; i < elems.length; i++) {
+      const option = elems[i]
+      const filtered = data.filter(function(row) {
+        return row['class'] === option
+      })
+      filteredData.push(filtered)
+    }
+
+    console.log(filteredData)
 
     const X_SCALE2 = d3.scaleBand()
                            .range([0, VIS_WIDTH])
@@ -171,10 +192,10 @@ d3.csv("data/SDSS2.csv").then((data) => {
             .call(d3.axisLeft(Y_SCALE2).ticks(2))
             .attr("font-size", "20px");
 
-
+    
     // Adding bars
     bars1 =  FRAME2.selectAll(".bar")
-            .data(data)
+            .data(filteredData)
             .enter()
             .append("rect")
                 .attr("x", (d) => { return (X_SCALE2(d.class) + MARGINS.left); }) 
@@ -209,7 +230,7 @@ d3.csv("data/SDSS2.csv").then((data) => {
 
 //console.log(space_class)
 
-build_bar(space_class)
+
 
 
 
