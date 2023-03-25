@@ -24,7 +24,7 @@ function setSelectedOptions (){
   selectElement.remove(selectElement.selectedIndex);
   build_scatter(elems);
   build_bar(elems);
-};
+}
 
 
 // // save multiple select options in an array
@@ -40,15 +40,10 @@ function setSelectedOptions (){
 
 console.log(elems)
 
-// User can reset to start over CONFUSED
-// function resetButton() {
-//   const selectElement = document.getElementById("selectId");
-//   const selectedOptions = selectElement.selectedOptions;
-//   elems.length = 0;
-//   for (let i = 0; i < selectedOptions.length; i++) {
-//     const optionValue = selectedOptions[i].value;
-//     elems.push(optionValue);
-//   }
+// //remove option after its been graphed
+// function fun_remove() {
+//     var element = document.getElementById("selectId");
+//     element.remove(element.selectedIndex);
 // };
 
 // Constants for visualizations
