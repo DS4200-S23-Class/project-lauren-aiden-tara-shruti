@@ -21,7 +21,6 @@ function setSelectedOptions (){
     const optionValue = selectedOptions[i].value;
     elems.push(optionValue);
   }
-  selectElement.remove(selectElement.selectedIndex);
   build_scatter(elems);
   build_bar(elems);
 }
@@ -60,6 +59,12 @@ const FRAME1 = d3.select("#scatter")
                     .attr("height", FRAME_HEIGHT)
                     .attr("width", FRAME_WIDTH)
                     .attr("class", "frame"); 
+//Bar graph 
+const FRAME2 = d3.select("#bar")
+                    .append("svg")
+                    .attr("height", FRAME_HEIGHT)
+                    .attr("width", FRAME_WIDTH)
+                    .attr("class", "frame"); 
  
 function build_scatter(options) {
   console.log(options)
@@ -76,6 +81,8 @@ function build_scatter(options) {
       })
       filteredData.push(...filtered)
     }
+
+
 
     const MAX_X1 = d3.max(data, (d) => { return parseInt(d.dec); });
     const MAX_Y1 = d3.max(data, (d) => { return parseInt(d.ra); });
@@ -125,35 +132,37 @@ function build_scatter(options) {
               .attr("class", "point");
 
   // Add brushing
-    FRAME1.call( d3.brush()                 // Add the brush feature using the d3.brush function
+    FRAME1.call(d3.brush()                 // Add the brush feature using the d3.brush function
             .extent( [ [0,0], [FRAME_WIDTH, FRAME_HEIGHT] ] ) // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
             .on("start brush", updateChart) // Each time the brush selection changes, trigger the 'updateChart' function
     )
 
   //Function that is triggered when brushing is performed
    function updateChart(event) {
-         const extent = event.selection;
-        pts1.classed("selected", function(d){return isBrushed(extent, (X_SCALE1(d.dec) + MARGINS.left), (Y_SCALE1(d.ra) + MARGINS.top))})                                                      
-       bars1.classed("selected", function(d){return isBrushed(extent, (X_SCALE1(d.dec) + MARGINS.left), (Y_SCALE1(d.ra) + MARGINS.top))})};     
-
+        const extent = event.selection;
+        k = d3.brush()
+        pts1.classed("selected", function(d){return isBrushed(extent, (X_SCALE1(d.dec) + MARGINS.left), (Y_SCALE1(d.ra) + MARGINS.top))})                                                    
+        bars1.classed("selected", function(d){return isBrushed(extent, (X_SCALE1(d.dec) + MARGINS.left), (Y_SCALE1(d.ra) + MARGINS.top))})};     
+  
+  brushed_points = []
   // A function that return TRUE or FALSE according if a dot is in the selection or not
    function isBrushed(brush_coords, cx, cy) {
        var x0 = brush_coords[0][0],
           x1 = brush_coords[1][0],
           y0 = brush_coords[0][1],
-           y1 = brush_coords[1][1];
+          y1 = brush_coords[1][1];
+
+          if (x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1) {
+           brushed_points.push(cx)
+           };
+
+           console.log(brushed_points)
+        
       return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1};    // This return TRUE or FALSE depending on if the points is in the selected area
 })
-
+  console.log(brushed_points)
 }
 build_scatter(elems)
-
-//Bar graph 
-const FRAME2 = d3.select("#bar")
-                    .append("svg")
-                    .attr("height", FRAME_HEIGHT)
-                    .attr("width", FRAME_WIDTH)
-                    .attr("class", "frame"); 
 
 function build_bar(elems) {
 // Open file
@@ -168,12 +177,47 @@ d3.csv("data/SDSS2.csv").then((data) => {
       filteredData.push(filtered)
     }
 
-    console.log(filteredData)
+    console.log(d3.mean(filteredData[0], d => d.redshift))
 
+    Array.prototype.insert = function ( index, ...items ) {
+      this.splice( index, 0, ...items );
+   };
+    var redshift_avg = []
+
+
+   // star redshift
+   if (elems.includes("STAR")) {
+    index = elems.indexOf("STAR")
+     redshift_avg.insert(0, d3.mean(filteredData[index], d => d.redshift))
+   }
+   else {
+    redshift_avg.insert(0, 0)
+  }
+
+  // galaxy redshift
+    if (elems.includes("GALAXY")) {
+      index = elems.indexOf("GALAXY")
+      redshift_avg.insert(1, d3.mean(filteredData[index], d => d.redshift))
+        }
+    else {
+      redshift_avg.insert(1,0)
+    }
+
+  // quasar redshift
+  if (elems.includes("QSO")) {
+    index = elems.indexOf("QSO")
+    redshift_avg.insert(2, d3.mean(filteredData[index], d => d.redshift))
+  }
+  else {
+    redshift_avg.insert(2,0)
+  }
+      
+  console.log(redshift_avg)
+   
     const X_SCALE2 = d3.scaleBand()
                            .range([0, VIS_WIDTH])
                            .domain(data.map((d) => {return d.class;}))
-                           .padding(.3);
+                           .padding(-.3);
 
     const Y_SCALE2 = d3.scaleLinear()
                            .range([VIS_HEIGHT, 0])
@@ -202,13 +246,13 @@ d3.csv("data/SDSS2.csv").then((data) => {
     
     // Adding bars
     bars1 =  FRAME2.selectAll(".bar")
-            .data(filteredData)
+            .data(redshift_avg)
             .enter()
             .append("rect")
                 .attr("x", (d) => { return (X_SCALE2(d.class) + MARGINS.left); }) 
                 .attr("width", X_SCALE2.bandwidth())
                 .attr("y", (d) => {return Y_SCALE2(50) + MARGINS.top})
-                .attr("height", (d) => {return VIS_HEIGHT - Y_SCALE2(50)})
+                .attr("height", redshift_avg)
                 .attr("fill", (d) => { return color(d.class);})
                 .attr("opacity", 0.5)
                 .attr("class", "bar");
