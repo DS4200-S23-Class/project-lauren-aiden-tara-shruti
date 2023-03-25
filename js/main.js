@@ -39,6 +39,12 @@ function setSelectedOptions (){
 
 console.log(elems)
 
+//remove option after its been graphed
+// function fun_remove() {
+//     var element = document.getElementById("selectId");
+//     element.remove(element.selectedIndex);
+// };
+
 // Constants for visualizations
 const FRAME_HEIGHT = 300;
 const FRAME_WIDTH = 450; 
