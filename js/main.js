@@ -14,7 +14,7 @@ button = document.querySelector('#submit-button');
 button.addEventListener('click', setSelectedOptions);
 
 function setSelectedOptions (){
-  let elems = []
+  let elems = [];
   let choices = document.querySelectorAll('input:checked');
 
   for (let i = 0; i < choices.length; i++) {
@@ -65,6 +65,8 @@ function build_scatter(options) {
   // Open file
   d3.csv("data/SDSS2.csv").then((data) => {
     
+    d3.selectAll("svg > *").remove();
+
     // console.log(options[0])
     console.log(data);
     filteredData = []
