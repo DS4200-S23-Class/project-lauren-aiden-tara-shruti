@@ -44,19 +44,22 @@
 
     </div>
 
+
+
     <div>
         <h2>Visualization</h2>
         <div class="row">
 
             <div class="column left">
                 <div id="scatter">
-                <label for="class">Choose a class of celestial objects:</label>
-                    <select name="class" id="selectId" multiple>
-                    <option value="STAR">Star</option>
-                    <option value="GALAXY">Galaxy</option>
-                    <option value="QSO">Quasar</option>
-                    </select>
-                <button type="submit" id="submit-button" onclick = "fun_remove()">Add Class</button>
+                    <label for="class">Choose which classes of celestial objects:</label>
+                        <form id="selectId" multiple>
+                            <input value="GALAXY" type="checkbox">Galaxy</input><br>
+                            <input value="STAR" type="checkbox">Star</input><br>
+                            <input value="QSO" type="checkbox">Quasar</input><br>
+                        </form> 
+                    <button type="submit" id="submit-button">Add Class</button>
+                    <button onClick="window.location.reload();">Restart</button>
                 </div>   
             </div>
 

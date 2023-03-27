@@ -14,15 +14,14 @@ button = document.querySelector('#submit-button');
 button.addEventListener('click', setSelectedOptions);
 
 function setSelectedOptions (){
-  const selectElement = document.getElementById("selectId");
-  const selectedOptions = selectElement.selectedOptions;
-  elems.length = 0;
-  for (let i = 0; i < selectedOptions.length; i++) {
-    const optionValue = selectedOptions[i].value;
-    elems.push(optionValue);
+  let elems = []
+  let choices = document.querySelectorAll('input:checked');
+
+  for (let i = 0; i < choices.length; i++) {
+    elems.push(choices[i].value);
   }
   build_scatter(elems);
-  build_bar(elems);
+  //build_bar(elems);
 }
 
 
@@ -39,11 +38,6 @@ function setSelectedOptions (){
 
 console.log(elems)
 
-// //remove option after its been graphed
-// function fun_remove() {
-//     var element = document.getElementById("selectId");
-//     element.remove(element.selectedIndex);
-// };
 
 // Constants for visualizations
 const FRAME_HEIGHT = 300;
@@ -95,9 +89,6 @@ function build_scatter(options) {
                         .domain([0, (MAX_Y1 + 1)]) 
                         .range([VIS_HEIGHT, 0]);
   
-    // const color = d3.scaleSequential()
-    //      .domain(d3.extent(data, d => d.color))
-    //        .interpolator(d3.interpolateBlues);
   
     const color = d3.scaleOrdinal()
                 .domain(["STAR", "GALAXY", "QSO" ])
