@@ -21,7 +21,7 @@ function setSelectedOptions (){
     elems.push(choices[i].value);
   }
   build_scatter(elems);
-  //build_bar(elems);
+  build_bar(elems);
 }
 
 
@@ -210,9 +210,13 @@ d3.csv("data/SDSS2.csv").then((data) => {
                            .domain(data.map((d) => {return d.class;}))
                            .padding(-.3);
 
+
+    const MIN_Y2 = d3.min(data, (d) => { return parseInt(d.redshift); });
+    const MAX_Y2 = d3.max(data, (d) => { return parseInt(d.redshift); });
+
     const Y_SCALE2 = d3.scaleLinear()
                            .range([VIS_HEIGHT, 0])
-                           .domain([0,100])
+                           .domain([(-(MAX_Y2) - 1), (MAX_Y2 + 1)]) 
 
 
     const color = d3.scaleOrdinal()
@@ -235,6 +239,7 @@ d3.csv("data/SDSS2.csv").then((data) => {
             .attr("font-size", "20px");
 
     
+    data2 = redshift_avg
     // Adding bars
     bars1 =  FRAME2.selectAll(".bar")
             .data(redshift_avg)
@@ -243,12 +248,13 @@ d3.csv("data/SDSS2.csv").then((data) => {
                 .attr("x", (d) => { return (X_SCALE2(d.class) + MARGINS.left); }) 
                 .attr("width", X_SCALE2.bandwidth())
                 .attr("y", (d) => {return Y_SCALE2(50) + MARGINS.top})
-                .attr("height", redshift_avg)
+                .attr("height", (d) =>{return d.getItem()})
                 .attr("fill", (d) => { return color(d.class);})
                 .attr("opacity", 0.5)
                 .attr("class", "bar");
 
     // // Tooltip for bar graph
+
     // const TOOLTIP1 = d3.select("#bar")
     //                     .append("div")
     //                     .attr("class", "tooltip")
