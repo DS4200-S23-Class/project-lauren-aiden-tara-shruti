@@ -24,6 +24,7 @@ function setSelectedOptions (){
   build_bar(elems);
 }
 
+classes = ["STAR", "GALAXY", "QSO" ]
 
 // // save multiple select options in an array
 // function getSelectedOptions() {
@@ -210,11 +211,11 @@ d3.csv("data/SDSS2.csv").then((data) => {
     const X_SCALE2 = d3.scaleBand()
                            .range([0, VIS_WIDTH])
                            .domain(data.map((d) => {return d.class;}))
-                           .padding(-.3);
+                           .padding(0.1);
 
 
-    const MIN_Y2 = d3.min(data, (d) => { return parseInt(d.redshift); });
-    const MAX_Y2 = d3.max(data, (d) => { return parseInt(d.redshift); });
+    const MIN_Y2 = d3.min(redshift_avg);
+    const MAX_Y2 = d3.max(redshift_avg);
 
     const Y_SCALE2 = d3.scaleLinear()
                            .range([VIS_HEIGHT, 0])
@@ -241,17 +242,16 @@ d3.csv("data/SDSS2.csv").then((data) => {
             .attr("font-size", "20px");
 
     
-    data2 = redshift_avg
     // Adding bars
     bars1 =  FRAME2.selectAll(".bar")
             .data(redshift_avg)
             .enter()
             .append("rect")
-                .attr("x", (d) => { return (X_SCALE2(d.class) + MARGINS.left); }) 
+                .attr("x", (d) => {return (X_SCALE2(d)) + MARGINS.bottom} )
                 .attr("width", X_SCALE2.bandwidth())
-                .attr("y", (d) => {return Y_SCALE2(50) + MARGINS.top})
-                .attr("height", (d) =>{return d.getItem()})
-                .attr("fill", (d) => { return color(d.class);})
+                .attr("y", (d) => {return Y_SCALE2(d) + MARGINS.top- MARGINS.left})
+                .attr("height", (d) => {console.log(d); return 10000 * d})
+                .attr("fill", "blue")
                 .attr("opacity", 0.5)
                 .attr("class", "bar");
 
