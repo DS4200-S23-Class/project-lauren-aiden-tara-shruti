@@ -21,7 +21,7 @@ function setSelectedOptions (){
     elems.push(choices[i].value);
   }
   build_scatter(elems);
-  build_bar(elems);
+  // build_bar(elems);
 }
 
 classes = ["STAR", "GALAXY", "QSO" ]
@@ -219,7 +219,7 @@ d3.csv("data/SDSS2.csv").then((data) => {
 
     const Y_SCALE2 = d3.scaleLinear()
                            .range([VIS_HEIGHT, 0])
-                           .domain([(-(MAX_Y2) - 1), (MAX_Y2 + 1)]) 
+                           .domain([0, 1]) 
 
 
     const color = d3.scaleOrdinal()
@@ -242,6 +242,7 @@ d3.csv("data/SDSS2.csv").then((data) => {
             .attr("font-size", "20px");
 
     
+
     // Adding bars
     bars1 =  FRAME2.selectAll(".bar")
             .data(redshift_avg)
@@ -250,7 +251,7 @@ d3.csv("data/SDSS2.csv").then((data) => {
                 .attr("x", (d) => {return (X_SCALE2(d)) + MARGINS.bottom} )
                 .attr("width", X_SCALE2.bandwidth())
                 .attr("y", (d) => {return Y_SCALE2(d) + MARGINS.top- MARGINS.left})
-                .attr("height", (d) => {console.log(d); return 10000 * d})
+                .attr("height", (d) => {console.log(d); return d})
                 .attr("fill", "blue")
                 .attr("opacity", 0.5)
                 .attr("class", "bar");
@@ -280,7 +281,7 @@ d3.csv("data/SDSS2.csv").then((data) => {
 
 //console.log(space_class)
 
-
+build_bar(elems)
 
 
 
