@@ -158,6 +158,7 @@ function build_scatter(options) {
 }
 build_scatter(elems)
 
+
 function build_bar(elems) {
 // Open file
 d3.csv("data/SDSS2.csv").then((data) => {
@@ -218,8 +219,12 @@ d3.csv("data/SDSS2.csv").then((data) => {
     const MAX_Y2 = d3.max(redshift_avg);
 
     const Y_SCALE2 = d3.scaleLinear()
-                           .range([VIS_HEIGHT, 0])
-                           .domain([(-(MAX_Y2) - 1), (MAX_Y2 + 1)]) 
+    .domain([0, 1])
+    .range([VIS_HEIGHT, 0]);
+
+    // const Y_SCALE2 = d3.scaleLinear()
+    //                        .range([VIS_HEIGHT, 0])
+    //                        .domain([(-(MAX_Y2) - 1), (MAX_Y2 + 1)]) 
 
 
     const color = d3.scaleOrdinal()
@@ -247,11 +252,11 @@ d3.csv("data/SDSS2.csv").then((data) => {
             .data(redshift_avg)
             .enter()
             .append("rect")
-                .attr("x", (d) => {return (X_SCALE2(d)) + MARGINS.bottom} )
+                .attr("x", (d) => {return (X_SCALE2(d)) - MARGINS.bottom + MARGINS.left} )
                 .attr("width", X_SCALE2.bandwidth())
-                .attr("y", (d) => {return Y_SCALE2(d) + MARGINS.top- MARGINS.left})
-                .attr("height", (d) => {console.log(d); return 10000 * d})
-                .attr("fill", "blue")
+                .attr("y", (d) => {return Y_SCALE2(d) - MARGINS.top + MARGINS.right})
+                .attr("height", (d) => {return 500 * d})
+                .attr("fill", color)
                 .attr("opacity", 0.5)
                 .attr("class", "bar");
 
@@ -279,9 +284,4 @@ d3.csv("data/SDSS2.csv").then((data) => {
 })}
 
 //console.log(space_class)
-
-
-
-
-
 
