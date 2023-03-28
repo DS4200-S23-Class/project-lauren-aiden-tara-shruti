@@ -214,12 +214,9 @@ d3.csv("data/SDSS2.csv").then((data) => {
                            .padding(0.1);
 
 
-    const MIN_Y2 = d3.min(redshift_avg);
-    const MAX_Y2 = d3.max(redshift_avg);
-
     const Y_SCALE2 = d3.scaleLinear()
                            .range([VIS_HEIGHT, 0])
-                           .domain([(-(MAX_Y2) - 1), (MAX_Y2 + 1)]) 
+                           .domain([0, 1]) 
 
 
     const color = d3.scaleOrdinal()
