@@ -210,6 +210,28 @@ function build_bar(options) {
            .attr("text-anchor", "middle")
             .attr("class", "bar");
 
+      FRAME2.append("text")
+              .attr("x", 100)
+              .attr("y", 243)
+              .attr("font-size", 10)
+              .attr("fill", "royalblue")
+              .text("0.0002"); 
+
+      FRAME2.append("text")
+              .attr("x", 210)
+              .attr("y", 205)
+              .attr("font-size", 10)
+              .attr("fill", "violet")
+              .text(".0804");
+
+
+      FRAME2.append("text")
+              .attr("x", 320)
+              .attr("y", 50)
+              .attr("font-size", 10)
+              .attr("fill", "green")
+              .text("0.4103");
+
       // Add x axis to vis
       FRAME2.append("g") 
       .attr("transform", "translate(" + MARGINS.left + 
