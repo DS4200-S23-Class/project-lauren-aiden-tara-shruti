@@ -135,8 +135,7 @@ function build_scatter(options) {
    function updateChart(event) {
         const extent = event.selection;
         k = d3.brush()
-        pts1.classed("selected", function(d){return isBrushed(extent, (X_SCALE1(d.dec) + MARGINS.left), (Y_SCALE1(d.ra) + MARGINS.top))})                                                    
-        bars1.classed("selected", function(d){return isBrushed(extent, (X_SCALE1(d.dec) + MARGINS.left), (Y_SCALE1(d.ra) + MARGINS.top))})};     
+        pts1.classed("selected", function(d){return isBrushed(extent, (X_SCALE1(d.dec) + MARGINS.left), (Y_SCALE1(d.ra) + MARGINS.top))})};     
   
   brushed_points = []
   // A function that return TRUE or FALSE according if a dot is in the selection or not
@@ -173,8 +172,18 @@ function build_bar(options) {
       // Define scale functions that maps our data y values
       // (domain) to pixel values (range)
       const Y_SCALE_CLASS = d3.scaleLinear()
-                                .domain([0, 1])
-                                .range([VIS_HEIGHT, 0]);
+                                .domain([0,.42])
+                                 .range([VIS_HEIGHT, 0]);
+
+      function get_redshift(d) {                          
+      if(d.class === "STAR") {
+              return 0.0002102389190283399;
+            } else if (d.class === "GALAXY") {
+              return 0.08036230192708328;
+            } else if (d.class === "QSO"){
+              return 0.4103186918181818;
+            }};
+            
 
       // Use X_SCALE_CLASS and Y_SCALE_CLASS to plot graph
       let bars = FRAME2.selectAll("bars")  
@@ -183,16 +192,8 @@ function build_bar(options) {
           .append("rect")
             .attr("x", (d) => { return (X_SCALE_CLASS(d.class) + MARGINS.left); })
             .attr("width", X_SCALE_CLASS.bandwidth())
-            .attr("y", 250)    
-            .attr("height", function (d) {
-              if(d.class === "STAR") {
-              return 0.0002102389190283399 * 100
-            } else if (d.class === "GALAXY") {
-              return 0.08036230192708328 * 100
-            } else if (d.class === "QSO"){
-              return 0.4103186918181818 * 100
-            }
-            })
+            .attr("y", (d) => { return Y_SCALE_CLASS(get_redshift(d)) + MARGINS.top})   
+            .attr("height", (d) => {return VIS_HEIGHT - Y_SCALE_CLASS(get_redshift(d))})
             .attr("fill", function (d) {
               if(d.class === "STAR") {
               return "royalblue"
@@ -217,6 +218,35 @@ function build_bar(options) {
             "," + (MARGINS.top) + ")") 
       .call(d3.axisLeft(Y_SCALE_CLASS).ticks(4)) 
         .attr("font-size", '10px'); 
+
+      //       // Highlight bars when you hover
+      // const TOOLTIP = d3.select("#bar")
+      //                     .append("div")
+      //                       .attr("class", "tooltip")
+      //                       .style("opacity", 0);
+
+      // // Change color by hovering
+      // function handleMouseover2(event, d) {
+      //   // on mouseover, change color
+      //   TOOLTIP.style("opacity", 1);
+      // }
+
+      // // Show value of each bar with tooltip
+      // function handleMousemove(event, d) {
+      // TOOLTIP.html("Category: " + d.category + "<br>Amount: " + d.amount)
+      //         .style("left", (event.pageX + 10) + "px")                                          
+      //         .style("top", (event.pageY - 50) + "px"); 
+      // }
+
+      // function handleMouseleave(event, d) {
+      //   TOOLTIP.style("opacity", 0);
+      // }
+
+
+      // FRAME2.selectAll(".bar")
+      //       .on("mouseover", handleMouseover2) 
+      //       .on("mousemove", handleMousemove)
+      //       .on("mouseleave", handleMouseleave); //add event listeners
 
   })};
 
