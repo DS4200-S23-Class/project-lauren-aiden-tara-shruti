@@ -198,9 +198,9 @@ function build_bar(options) {
               if(d.class === "STAR") {
               return "royalblue"
             } else if (d.class === "GALAXY") {
-              return "green"
-            } else {
               return "violet"
+            } else {
+              return "green"
             }
             })
             .append("text")
@@ -221,7 +221,7 @@ function build_bar(options) {
       FRAME2.append("g") 
       .attr("transform", "translate(" + MARGINS.bottom + 
             "," + (MARGINS.top) + ")") 
-      .call(d3.axisLeft(Y_SCALE_CLASS).ticks(4)) 
+      .call(d3.axisLeft(Y_SCALE_CLASS).ticks(8)) 
         .attr("font-size", '10px'); 
 
       //       // Highlight bars when you hover
