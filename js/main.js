@@ -159,131 +159,66 @@ function build_scatter(options) {
 build_scatter(elems)
 
 
-function build_bar(elems) {
-// Open file
-d3.csv("data/SDSS2.csv").then((data) => {
+function build_bar(options) {
+  // Read data and create bar plot
+  d3.csv("data/SDSS2.csv").then((data) => {
 
-  filteredData = []
-    for (let i = 0; i < elems.length; i++) {
-      const option = elems[i]
-      const filtered = data.filter(function(row) {
-        return row['class'] === option
-      })
-      filteredData.push(filtered)
-    }
+    // Define scale functions that maps our data x values 
+      // (domain) to pixel values (range)
+      const X_SCALE_CLASS = d3.scaleBand()   
+                                .range([0, VIS_WIDTH])
+                                .domain(data.map((d) => { return d.class; }))
+                                .padding(0.2); 
 
-    console.log(d3.mean(filteredData[0], d => d.redshift))
+      // Define scale functions that maps our data y values
+      // (domain) to pixel values (range)
+      const Y_SCALE_CLASS = d3.scaleLinear()
+                                .domain([0, 1])
+                                .range([VIS_HEIGHT, 0]);
 
-    Array.prototype.insert = function ( index, ...items ) {
-      this.splice( index, 0, ...items );
-   };
-    var redshift_avg = []
+      // Use X_SCALE_CLASS and Y_SCALE_CLASS to plot graph
+      let bars = FRAME2.selectAll("bars")  
+          .data(data) // passed from .then  
+          .enter()       
+          .append("rect")
+            .attr("x", (d) => { return (X_SCALE_CLASS(d.class) + MARGINS.left); })
+            .attr("width", X_SCALE_CLASS.bandwidth())
+            .attr("y", 250)    
+            .attr("height", function (d) {
+              if(d.class === "STAR") {
+              return 0.0002102389190283399 * 100
+            } else if (d.class === "GALAXY") {
+              return 0.08036230192708328 * 100
+            } else if (d.class === "QSO"){
+              return 0.4103186918181818 * 100
+            }
+            })
+            .attr("fill", function (d) {
+              if(d.class === "STAR") {
+              return "royalblue"
+            } else if (d.class === "GALAXY") {
+              return "green"
+            } else {
+              return "violet"
+            }
+            })
+            .attr("class", "bar");
 
+      // Add x axis to vis
+      FRAME2.append("g") 
+      .attr("transform", "translate(" + MARGINS.left + 
+            "," + (VIS_HEIGHT + MARGINS.top) + ")") 
+      .call(d3.axisBottom(X_SCALE_CLASS).ticks(3)) 
+        .attr("font-size", '10px'); 
 
-   // star redshift
-   if (elems.includes("STAR")) {
-    index = elems.indexOf("STAR")
-     redshift_avg.insert(0, d3.mean(filteredData[index], d => d.redshift))
-   }
-   else {
-    redshift_avg.insert(0, 0)
-  }
+      // Add y axis to vis
+      FRAME2.append("g") 
+      .attr("transform", "translate(" + MARGINS.bottom + 
+            "," + (MARGINS.top) + ")") 
+      .call(d3.axisLeft(Y_SCALE_CLASS).ticks(4)) 
+        .attr("font-size", '10px'); 
 
-  // galaxy redshift
-    if (elems.includes("GALAXY")) {
-      index = elems.indexOf("GALAXY")
-      redshift_avg.insert(1, d3.mean(filteredData[index], d => d.redshift))
-        }
-    else {
-      redshift_avg.insert(1,0)
-    }
-
-  // quasar redshift
-  if (elems.includes("QSO")) {
-    index = elems.indexOf("QSO")
-    redshift_avg.insert(2, d3.mean(filteredData[index], d => d.redshift))
-  }
-  else {
-    redshift_avg.insert(2,0)
-  }
-      
-  console.log(redshift_avg)
-   
-    const X_SCALE2 = d3.scaleBand()
-                           .range([0, VIS_WIDTH])
-                           .domain(data.map((d) => {return d.class;}))
-                           .padding(0.1);
-
-
-    const Y_SCALE2 = d3.scaleLinear()
-<<<<<<< HEAD
-    .domain([0, 1])
-    .range([VIS_HEIGHT, 0]);
-
-    // const Y_SCALE2 = d3.scaleLinear()
-    //                        .range([VIS_HEIGHT, 0])
-    //                        .domain([(-(MAX_Y2) - 1), (MAX_Y2 + 1)]) 
-=======
-                           .range([VIS_HEIGHT, 0])
-                           .domain([0, 1]) 
->>>>>>> ea7d3ab5c738cb60372cfede6b08056d729b6e2a
+  })};
 
 
-    const color = d3.scaleOrdinal()
-                  .domain(["STAR", "GALAXY", "QSO" ])
-                 .range([ "royalblue", "violet", "green"])
-
-
-    // Adding X Axis 
-    FRAME2.append("g") 
-            .attr("transform", "translate(" + MARGINS.left + "," + 
-                (VIS_HEIGHT + MARGINS.top) + ")") 
-            .call(d3.axisBottom(X_SCALE2))
-            .attr("font-size", '20px'); 
-
-    // Adding Y Axis
-    FRAME2.append("g")
-            .attr("transform", 
-                "translate(" + MARGINS.left + "," + (MARGINS.bottom) + ")")
-            .call(d3.axisLeft(Y_SCALE2).ticks(2))
-            .attr("font-size", "20px");
-
-    
-    // Adding bars
-    bars1 =  FRAME2.selectAll(".bar")
-            .data(redshift_avg)
-            .enter()
-            .append("rect")
-                .attr("x", (d) => {return (X_SCALE2(d)) - MARGINS.bottom + MARGINS.left} )
-                .attr("width", X_SCALE2.bandwidth())
-                .attr("y", (d) => {return Y_SCALE2(d) - MARGINS.top + MARGINS.right})
-                .attr("height", (d) => {return 500 * d})
-                .attr("fill", color)
-                .attr("opacity", 0.5)
-                .attr("class", "bar");
-
-    // // Tooltip for bar graph
-
-    // const TOOLTIP1 = d3.select("#bar")
-    //                     .append("div")
-    //                     .attr("class", "tooltip")
-    //                     .style("opacity", 0);
-
-    // // Show class of each bar and the amount of points selected with tooltip
-    // function handleMousemove(event, d) {
-    //     TOOLTIP1.html("Class: " + d.class + "<br>Amount Selected: " + ???) ISSUE
-    //             .style("left", (event.pageX + 10) + "px")                                          
-    //             .style("top", (event.pageY - 50) + "px"); 
-    // }
-
-    // function handleMouseleave(event, d) {
-    //     TOOLTIP1.style("opacity", 0);
-    // }
-
-    // FRAME2.selectAll(".bar")
-    //         .on("mousemove", handleMousemove)
-    //         .on("mouseleave", handleMouseleave); //add event listeners
-})}
-
-//console.log(space_class)
 
