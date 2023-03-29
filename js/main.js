@@ -203,6 +203,11 @@ function build_bar(options) {
               return "violet"
             }
             })
+            .append("text")
+              .text(function(d) {                 
+                    return d.class;
+              })
+           .attr("text-anchor", "middle")
             .attr("class", "bar");
 
       // Add x axis to vis
