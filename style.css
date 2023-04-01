@@ -38,3 +38,15 @@ h1 {
   border-radius: 5px;
   padding: 5px;
 }
+
+.star {
+  color: royalblue;
+}
+
+.galaxy {
+  color: red;
+}
+
+.quasar {
+  color: green;
+}

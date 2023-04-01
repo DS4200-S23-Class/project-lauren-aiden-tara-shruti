@@ -7,9 +7,9 @@ function displayData() {
       console.log(data);
     })}
 
-displayData()
+displayData();
 
-let elems = []
+let elems = [];
 button = document.querySelector('#submit-button');
 button.addEventListener('click', setSelectedOptions);
 
@@ -24,7 +24,7 @@ function setSelectedOptions (){
   build_bar(elems);
 }
 
-classes = ["STAR", "GALAXY", "QSO" ]
+classes = ["STAR", "GALAXY", "QSO" ];
 
 // // save multiple select options in an array
 // function getSelectedOptions() {
@@ -37,7 +37,7 @@ classes = ["STAR", "GALAXY", "QSO" ]
 //   }
 // }
 
-console.log(elems)
+console.log(elems);
 
 
 // Constants for visualizations
@@ -62,7 +62,7 @@ const FRAME2 = d3.select("#bar")
                     .attr("class", "frame"); 
  
 function build_scatter(options) {
-  console.log(options)
+  console.log(options);
   // Open file
   d3.csv("data/SDSS2.csv").then((data) => {
     
@@ -70,13 +70,13 @@ function build_scatter(options) {
 
     // console.log(options[0])
     console.log(data);
-    filteredData = []
+    filteredData = [];
     for (let i = 0; i < options.length; i++) {
-      const option = options[i]
+      const option = options[i];
       const filtered = data.filter(function(row) {
-        return row['class'] === option
-      })
-      filteredData.push(...filtered)
+        return row['class'] === option;
+      });
+      filteredData.push(...filtered);
     }
 
 
@@ -95,23 +95,64 @@ function build_scatter(options) {
   
     const color = d3.scaleOrdinal()
                 .domain(["STAR", "GALAXY", "QSO" ])
-                .range([ "royalblue", "violet", "green"])
+                .range([ "royalblue", "red", "green"]);
   
       // Add x axis
       FRAME1.append("g") 
-      .attr("transform", "translate(" + MARGINS.left + 
-          "," + (VIS_HEIGHT + MARGINS.top) + ")") 
-      .call(d3.axisBottom(X_SCALE1).tickValues([-2.0, -1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5, 2.0])
+              .attr("transform", "translate(" + MARGINS.left + 
+              "," + (VIS_HEIGHT + MARGINS.top) + ")") 
+              .call(d3.axisBottom(X_SCALE1).tickValues([-2.0, -1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5, 2.0])
                                    .tickFormat((d, i) => [-2.0, -1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5, 2.0] [i])) 
-      .attr("font-size", '10px');
+              .attr("font-size", '10px');
 
       // Add y axis 
       FRAME1.append("g")
-      .attr("transform", 
-          "translate(" + (X_SCALE1(0) + MARGINS.left) + "," + (MARGINS.bottom) + ")")
-      .call(d3.axisLeft(Y_SCALE1).tickValues([0, 50, 100, 150, 200, 245])
+              .attr("transform", 
+              "translate(" + (X_SCALE1(0) + MARGINS.left) + "," + (MARGINS.bottom) + ")")
+               .call(d3.axisLeft(Y_SCALE1).tickValues([0, 50, 100, 150, 200, 245])
                                  .tickFormat((d, i) => [0, 50, 100, 150, 200, 245] [i])) 
-      .attr("font-size", "10px");
+               .attr("font-size", "10px");
+
+      // Add legend to graph
+      FRAME1.append("circle")
+              .attr("cx",60)
+              .attr("cy",60)
+              .attr("r", 5)
+              .style("fill", "royalblue");
+
+      FRAME1.append("text")
+              .attr("x", 70)
+              .attr("y", 65)
+              .attr("font-size", 15)
+              .attr("fill", "royalblue")
+              .text("Star");
+
+      FRAME1.append("circle")
+              .attr("cx",60)
+              .attr("cy",80)
+              .attr("r", 5)
+              .style("fill", "red");
+
+      FRAME1.append("text")
+              .attr("x", 70)
+              .attr("y", 85)
+              .attr("font-size", 15)
+              .attr("fill", "red")
+              .text("Galaxy");
+
+      FRAME1.append("circle")
+              .attr("cx",60)
+              .attr("cy",100)
+              .attr("r", 5)
+              .style("fill", "green");
+
+      FRAME1.append("text")
+              .attr("x", 70)
+              .attr("y", 105)
+              .attr("font-size", 15)
+              .attr("fill", "green")
+              .text("Quasar");
+
 
     // Add points
     pts1 = FRAME1.selectAll("points")  
@@ -122,40 +163,40 @@ function build_scatter(options) {
               .attr("cy", (d) => { return (Y_SCALE1(d.ra) + MARGINS.top); }) 
               .attr("r", 3)
               .attr("fill", d => color(d.class))
-              .attr("opacity", 0.5)
+              .attr("opacity", 0.3)
               .attr("class", "point");
 
   // Add brushing
     FRAME1.call(d3.brush()                 // Add the brush feature using the d3.brush function
             .extent( [ [0,0], [FRAME_WIDTH, FRAME_HEIGHT] ] ) // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
             .on("start brush", updateChart) // Each time the brush selection changes, trigger the 'updateChart' function
-    )
+    );
 
   //Function that is triggered when brushing is performed
    function updateChart(event) {
         const extent = event.selection;
-        k = d3.brush()
-        pts1.classed("selected", function(d){return isBrushed(extent, (X_SCALE1(d.dec) + MARGINS.left), (Y_SCALE1(d.ra) + MARGINS.top))})};     
+        k = d3.brush();
+        pts1.classed("selected", function(d){return isBrushed(extent, (X_SCALE1(d.dec) + MARGINS.left), (Y_SCALE1(d.ra) + MARGINS.top))})}    
   
-  brushed_points = []
+  brushed_points = [];
   // A function that return TRUE or FALSE according if a dot is in the selection or not
    function isBrushed(brush_coords, cx, cy) {
-       var x0 = brush_coords[0][0],
+       const x0 = brush_coords[0][0],
           x1 = brush_coords[1][0],
           y0 = brush_coords[0][1],
           y1 = brush_coords[1][1];
 
           if (x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1) {
-           brushed_points.push(cx)
+           brushed_points.push(cx);
            };
 
-           console.log(brushed_points)
+           console.log(brushed_points);
         
       return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1};    // This return TRUE or FALSE depending on if the points is in the selected area
 })
-  console.log(brushed_points)
+  console.log(brushed_points);
 }
-build_scatter(elems)
+build_scatter(elems);
 
 
 function build_bar(options) {
@@ -182,7 +223,7 @@ function build_bar(options) {
               return 0.08036230192708328;
             } else if (d.class === "QSO"){
               return 0.4103186918181818;
-            }};
+            }}
             
 
       // Use X_SCALE_CLASS and Y_SCALE_CLASS to plot graph
@@ -196,11 +237,11 @@ function build_bar(options) {
             .attr("height", (d) => {return VIS_HEIGHT - Y_SCALE_CLASS(get_redshift(d))})
             .attr("fill", function (d) {
               if(d.class === "STAR") {
-              return "royalblue"
+              return "royalblue";
             } else if (d.class === "GALAXY") {
-              return "violet"
+              return "red";
             } else {
-              return "green"
+              return "green";
             }
             })
             .append("text")
@@ -221,7 +262,7 @@ function build_bar(options) {
               .attr("x", 210)
               .attr("y", 205)
               .attr("font-size", 10)
-              .attr("fill", "violet")
+              .attr("fill", "red")
               .text(".0804");
 
 
@@ -275,7 +316,7 @@ function build_bar(options) {
       //       .on("mousemove", handleMousemove)
       //       .on("mouseleave", handleMouseleave); //add event listeners
 
-  })};
+  })}
 
 
 
