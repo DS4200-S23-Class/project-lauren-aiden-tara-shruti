@@ -290,268 +290,42 @@ const FRAME3 = d3.select("#histo1")
                     .attr("width", FRAME_WIDTH)
                     .attr("class", "frame");
 
-function build_histo1() {
 
-  // const width = 300
-  // const height = 6700
-  const padding = 50
 
-  d3.csv("data/SDSS2.csv").then((data) => {
 
-    const map = data.map(function (d) { return parseInt(d.u); })
-
-    const histogram = d3.histogram()
-                        .thresholds(5)
-                        (map)
-
-    const y = d3.scaleLinear()
-                .domain([0, d3.max(histogram.map(function (d) { return d.length; }))])
-                .range([0, VIS_HEIGHT]);
-
-    const x = d3.scaleLinear()
-                .domain([0, d3.max(map)])
-                .range([0, VIS_WIDTH]);
-
-
-    FRAME3.select("#histo1")
-            .append("svg")
-            .attr("width", VIS_WIDTH)
-            .attr("height", VIS_HEIGHT + padding)
-
-
-    FRAME3.append("g")
-            .attr("transform", "translate(0," + VIS_HEIGHT + ")")
-            .call(d3.axisBottom(x));
-
-
-    FRAME3.selectAll(".bar")
-            .data(histogram)
-            .enter()
-            .append("rect")
-              .attr("x", function (d) { return x(d.x1-(d.x1-d.x0)); })
-              .attr("y", function (d) { return VIS_HEIGHT - y(d.length); })
-              .attr("width", function (d) { return x(d.x1-d.x0); })
-              .attr("height", function (d) { return y(d.length); })
-              .attr("fill", "violet");
-
-    // Highlight bars when you hover
-      const TOOLTIP1 = d3.select("#histo1")
-                          .append("div")
-                            .attr("class", "tooltip")
-                            .style("opacity", 0);
-
-      // Change color by hovering
-      function handleMouseover2(event, d) {
-        // on mouseover, change color
-        TOOLTIP1.style("opacity", 1);
-      }
-
-      // Show value of each bar with tooltip
-      function handleMousemove(event, d) {
-      TOOLTIP11.html("Band: " + d.u + "<br>Amount: " + d.length)
-              .style("left", (event.pageX + 10) + "px")                                          
-              .style("top", (event.pageY - 50) + "px"); 
-      }
-
-      function handleMouseleave(event, d) {
-        TOOLTIP1.style("opacity", 0);
-      }
-
-
-      FRAME3.selectAll(".bar")
-            .on("mouseover", handleMouseover2) 
-            .on("mousemove", handleMousemove)
-            .on("mouseleave", handleMouseleave); //add event listeners
-
-
-})};
-
-build_histo1();
-
-
-
-// G histogram
-const FRAME4 = d3.select("#histo2")
-                    .append("svg")
-                    .attr("height", FRAME_HEIGHT)
-                    .attr("width", FRAME_WIDTH)
-                    .attr("class", "frame");
-
-function build_histo2() {
-
-  const padding = 50
-
-  d3.csv("data/SDSS2.csv").then((data) => {
-
-    const map = data.map(function (d) { return parseInt(d.g); })
-
-    const histogram = d3.histogram()
-                        .thresholds(5)
-                        (map)
-
-    const y = d3.scaleLinear()
-                .domain([0, d3.max(histogram.map(function (d) { return d.length; }))])
-                .range([0, VIS_HEIGHT]);
-
-    const x = d3.scaleLinear()
-                .domain([0, d3.max(map)])
-                .range([0, VIS_WIDTH]);
-
-
-    FRAME4.select("#histo2")
-            .append("svg")
-            .attr("width", VIS_WIDTH)
-            .attr("height", VIS_HEIGHT + padding)
-
-
-    FRAME4.append("g")
-            .attr("transform", "translate(0," + VIS_HEIGHT + ")")
-            .call(d3.axisBottom(x));
-
-
-    FRAME4.selectAll(".bar")
-            .data(histogram)
-            .enter()
-            .append("rect")
-              .attr("x", function (d) { return x(d.x1-(d.x1-d.x0)); })
-              .attr("y", function (d) { return VIS_HEIGHT - y(d.length); })
-              .attr("width", function (d) { return x(d.x1-d.x0); })
-              .attr("height", function (d) { return y(d.length); })
-              .attr("fill", "teal"); 
-
-
-
-
-})};
-
-build_histo2();
-
-
-
-// R histogram
-const FRAME5 = d3.select("#histo3")
-                    .append("svg")
-                    .attr("height", FRAME_HEIGHT)
-                    .attr("width", FRAME_WIDTH)
-                    .attr("class", "frame");
-
-function build_histo3() {
-
-  const padding = 50
-
-  d3.csv("data/SDSS2.csv").then((data) => {
-
-    const map = data.map(function (d) { return parseInt(d.r); })
-
-    const histogram = d3.histogram()
-                        .thresholds(5)
-                        (map)
-
-    const y = d3.scaleLinear()
-                .domain([0, d3.max(histogram.map(function (d) { return d.length; }))])
-                .range([0, VIS_HEIGHT]);
-
-    const x = d3.scaleLinear()
-                .domain([0, d3.max(map)])
-                .range([0, VIS_WIDTH]);
-
-
-    FRAME5.select("#histo3")
-            .append("svg")
-            .attr("width", VIS_WIDTH)
-            .attr("height", VIS_HEIGHT + padding)
-
-
-    FRAME5.append("g")
-            .attr("transform", "translate(0," + VIS_HEIGHT + ")")
-            .call(d3.axisBottom(x));
-
-
-    FRAME5.selectAll(".bar")
-            .data(histogram)
-            .enter()
-            .append("rect")
-              .attr("x", function (d) { return x(d.x1-(d.x1-d.x0)); })
-              .attr("y", function (d) { return VIS_HEIGHT - y(d.length); })
-              .attr("width", function (d) { return x(d.x1-d.x0); })
-              .attr("height", function (d) { return y(d.length); })
-              .attr("fill", "limegreen");
-
-})};
-
-build_histo3();
-
-
-
-// I histogram
-const FRAME6 = d3.select("#histo4")
-                    .append("svg")
-                    .attr("height", FRAME_HEIGHT)
-                    .attr("width", FRAME_WIDTH)
-                    .attr("class", "frame");
-
-function build_histo4() {
-
-  const padding = 50
-
-  d3.csv("data/SDSS2.csv").then((data) => {
-
-    const map = data.map(function (d) { return parseInt(d.i); })
-
-    const histogram = d3.histogram()
-                        .thresholds(5)
-                        (map)
-
-    const y = d3.scaleLinear()
-                .domain([0, d3.max(histogram.map(function (d) { return d.length; }))])
-                .range([0, VIS_HEIGHT]);
-
-    const x = d3.scaleLinear()
-                .domain([0, d3.max(map)])
-                .range([0, VIS_WIDTH]);
-
-
-    FRAME6.select("#histo4")
-            .append("svg")
-            .attr("width", VIS_WIDTH)
-            .attr("height", VIS_HEIGHT + padding)
-
-
-    FRAME6.append("g")
-            .attr("transform", "translate(0," + VIS_HEIGHT + ")")
-            .call(d3.axisBottom(x));
-
-
-    FRAME6.selectAll(".bar")
-            .data(histogram)
-            .enter()
-            .append("rect")
-              .attr("x", function (d) { return x(d.x1-(d.x1-d.x0)); })
-              .attr("y", function (d) { return VIS_HEIGHT - y(d.length); })
-              .attr("width", function (d) { return x(d.x1-d.x0); })
-              .attr("height", function (d) { return y(d.length); })
-              .attr("fill", "red");
-
-})};
-
-build_histo4();
-
-
+// general function 
 
 // Z histogram
-const FRAME7 = d3.select("#histo5")
-                    .append("svg")
-                    .attr("height", FRAME_HEIGHT)
-                    .attr("width", FRAME_WIDTH)
-                    .attr("class", "frame");
 
-function build_histo5() {
+function build_histo_all(band_type) {
 
   const padding = 50
 
   d3.csv("data/SDSS2.csv").then((data) => {
 
-    const map = data.map(function (d) { return parseInt(d.z); })
+
+
+     function  get_band(d, band_type){
+      if(band_type === "u") {
+              return d.u;
+            } 
+      else if (band_type === "g") {
+              return d.g;
+            } 
+      else if (band_type === "r"){
+              return d.r;
+            }
+      else if (band_type === "i"){
+              return d.i;
+            }
+      else if (band_type === "z"){
+              return d.z;
+            }
+      }
+
+    const map = data.map(function (d) { return parseInt(get_band(d, band_type))})
+
+   
 
     const histogram = d3.histogram()
                         .thresholds(5)
@@ -566,18 +340,70 @@ function build_histo5() {
                 .range([0, VIS_WIDTH]);
 
 
-    FRAME7.select("#histo5")
+    function  frame_num(band_type){
+      if(band_type === "u") {
+              return "#histo1";
+            } 
+      else if (band_type === "g") {
+              return "#histo2";
+            } 
+      else if (band_type === "r"){
+              return "#histo3";
+            }
+      else if (band_type === "i"){
+              return "#histo4";
+            }
+      else if (band_type === "z"){
+              return "#histo5";
+            }
+      }
+
+
+     const FRAME = d3.select(frame_num(band_type))
+                    .append("svg")
+                    .attr("height", FRAME_HEIGHT)
+                    .attr("width", FRAME_WIDTH)
+                    .attr("class", "frame");
+
+              
+    FRAME.select(frame_num(band_type))
             .append("svg")
             .attr("width", VIS_WIDTH)
             .attr("height", VIS_HEIGHT + padding)
 
 
-    FRAME7.append("g")
+
+    FRAME.append("g")
             .attr("transform", "translate(0," + VIS_HEIGHT + ")")
             .call(d3.axisBottom(x));
 
 
-    FRAME7.selectAll(".bar")
+    const color = d3.scaleOrdinal()
+                .domain(["u", "g", "r", "i", "z"])
+                .range([ "violet", "teal", "limegreen", "red", "maroon"]);
+
+
+//// color doesnt work eek 
+
+    function getColor() {
+     if(band_type === "u") {
+              return "violet";
+            } 
+      else if (band_type === "g") {
+              return "teal";
+            } 
+      else if (band_type === "r"){
+              return "limegreen";
+            }
+      else if (band_type === "i"){
+              return "red";
+            }
+      else if (band_type === "z"){
+              return "maroon";
+            }
+      }
+
+    FRAME.selectAll(".bar")
             .data(histogram)
             .enter()
             .append("rect")
@@ -585,11 +411,23 @@ function build_histo5() {
               .attr("y", function (d) { return VIS_HEIGHT - y(d.length); })
               .attr("width", function (d) { return x(d.x1-d.x0); })
               .attr("height", function (d) { return y(d.length); })
-              .attr("fill", "maroon");
+              .attr("fill", function(d) { return color(getColor(d))})
+
+
 
 })};
 
-build_histo5();
+build_histo_all("g");
+build_histo_all("u");
+build_histo_all("r");
+build_histo_all("i");
+
+build_histo_all("z");
+
+
+
+
+
 
 
 
