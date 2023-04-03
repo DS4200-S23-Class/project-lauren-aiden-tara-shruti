@@ -51,7 +51,6 @@
         <div class="row">
 
             <div class="column left">
-                <h3>Declination (x) vs. Right Ascension (y)</h3>
                 <div id="scatter">
                     <label for="class">Choose which classes of celestial objects you want to graph (up to 3):</label>
                         <form id="selectId" multiple>
@@ -60,21 +59,24 @@
                             <input class="quasar" value="QSO" type="checkbox">Quasar</input><br>
                         </form> 
                     <button type="submit" id="submit-button">Plot Selected Classes</button>
+                    <h3>Declination (x) vs. Right Ascension (y)</h3>
                 </div>   
             </div>
 
             <div class="column right">
+                <br></br>
+                <br></br>
+                <br></br>
                 <h3>Average Redshift by Class</h3>
-                <h4>NOTE: We were originally going to use a tooltip for this visualization, however the star redshift
-                    is proportionally smaller to the point where hovering over it to see the tooltip is difficult.
-                    So, we've decided to implement our tooltip in our histograms which we have not yet begun.</h4>
                 <div id="bar"></div>   
             </div>
             
         </div>
-    <div>
-        <h2> Telescope Band Histograms </h2>
 
+
+    <div>
+        <h3> U - Band Histogram </h3>
+            <div id="histo"></div>
     </div>
 
     <div class = "Acknowledgements"> 

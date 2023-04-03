@@ -1,5 +1,5 @@
 body {
-    font-family: Arial;
+    font-family: Times New Roman;
 }
 
 h1 {
@@ -24,19 +24,6 @@ h1 {
   opacity: 1;
   stroke: black;
   stroke-width: 1.5px;
-}
-
-.bar:hover {
-  fill: yellow;
-}
-
-.tooltip {
-  position: absolute;
-  background-color: royalblue;
-  border:  solid;
-  border-width: 2px;
-  border-radius: 5px;
-  padding: 5px;
 }
 
 .star {

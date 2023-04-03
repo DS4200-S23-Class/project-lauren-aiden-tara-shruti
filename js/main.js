@@ -22,20 +22,12 @@ function setSelectedOptions (){
   }
   build_scatter(elems);
   build_bar(elems);
-}
+  build_histo();
+};
+
+
 
 classes = ["STAR", "GALAXY", "QSO" ];
-
-// // save multiple select options in an array
-// function getSelectedOptions() {
-//   const selectElement = document.getElementById("selectId");
-//   const selectedOptions = selectElement.selectedOptions;
-//   elems.length = 0;
-//   for (let i = 0; i < selectedOptions.length; i++) {
-//     const optionValue = selectedOptions[i].value;
-//     elems.push(optionValue);
-//   }
-// }
 
 console.log(elems);
 
@@ -59,7 +51,9 @@ const FRAME2 = d3.select("#bar")
                     .append("svg")
                     .attr("height", FRAME_HEIGHT)
                     .attr("width", FRAME_WIDTH)
-                    .attr("class", "frame"); 
+                    .attr("class", "frame");
+
+
  
 function build_scatter(options) {
   console.log(options);
@@ -176,7 +170,7 @@ function build_scatter(options) {
    function updateChart(event) {
         const extent = event.selection;
         k = d3.brush();
-        pts1.classed("selected", function(d){return isBrushed(extent, (X_SCALE1(d.dec) + MARGINS.left), (Y_SCALE1(d.ra) + MARGINS.top))})}    
+        pts1.classed("selected", function(d) {return isBrushed(extent, (X_SCALE1(d.dec) + MARGINS.left), (Y_SCALE1(d.ra) + MARGINS.top))})};    
   
   brushed_points = [];
   // A function that return TRUE or FALSE according if a dot is in the selection or not
@@ -192,10 +186,10 @@ function build_scatter(options) {
 
            console.log(brushed_points);
         
-      return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1};    // This return TRUE or FALSE depending on if the points is in the selected area
-})
-  console.log(brushed_points);
-}
+      return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1};   // This return TRUE or FALSE depending on if the points is in the selected area
+      console.log(brushed_points);
+})};
+
 build_scatter(elems);
 
 
@@ -287,36 +281,76 @@ function build_bar(options) {
       .call(d3.axisLeft(Y_SCALE_CLASS).ticks(8)) 
         .attr("font-size", '10px'); 
 
-      //       // Highlight bars when you hover
-      // const TOOLTIP = d3.select("#bar")
-      //                     .append("div")
-      //                       .attr("class", "tooltip")
-      //                       .style("opacity", 0);
-
-      // // Change color by hovering
-      // function handleMouseover2(event, d) {
-      //   // on mouseover, change color
-      //   TOOLTIP.style("opacity", 1);
-      // }
-
-      // // Show value of each bar with tooltip
-      // function handleMousemove(event, d) {
-      // TOOLTIP.html("Category: " + d.category + "<br>Amount: " + d.amount)
-      //         .style("left", (event.pageX + 10) + "px")                                          
-      //         .style("top", (event.pageY - 50) + "px"); 
-      // }
-
-      // function handleMouseleave(event, d) {
-      //   TOOLTIP.style("opacity", 0);
-      // }
+  })};
 
 
-      // FRAME2.selectAll(".bar")
-      //       .on("mouseover", handleMouseover2) 
-      //       .on("mousemove", handleMousemove)
-      //       .on("mouseleave", handleMouseleave); //add event listeners
+function build_histo() {
 
-  })}
+  const width = 300
+  const height = 6700
+  const padding = 50
+
+  d3.csv("data/SDSS2.csv").then((data) => {
+
+    const map = data.map(function (d) { return parseInt(d.u); })
+
+    const histogram = d3.histogram()
+                        .thresholds(5)
+                        (map)
+
+    const y = d3.scaleLinear()
+                .domain([0, d3.max(histogram.map(function (d) { return d.length; }))])
+                .range([0, height]);
+
+    const x = d3.scaleLinear()
+                .domain([0, d3.max(map)])
+                .range([0, width]);
+
+
+    const canvas = d3.select("#histo").append("svg")
+                                    .attr("width", width)
+                                    .attr("height", height + padding)
+                                    // .append("g")
+                                    //   .attr("transform", "translate(20,0");
+
+    const xAxis = canvas.append("g")
+                    .attr("transform", "translate(0," + height + ")")
+                    .call(d3.axisBottom(x));
+
+
+    const bars = canvas.selectAll(".bar")
+                        .data(histogram)
+                        .enter()
+                        .append("g")
+
+    bars.append("rect")
+        .attr("x", function (d) { return x(d.x1-(d.x1-d.x0)); })
+        .attr("y", function (d) { return 6700 - y(d.length); })
+        .attr("width", function (d) { return x(d.x1-d.x0); })
+        .attr("height", function (d) { return y(d.length); })
+        .attr("fill", "steelblue");
+
+     // text for bars, shows the distribution which adds to 450
+    bars.append("text")
+          .attr("x", function (d) { return x(d.x1-(d.x1-d.x0)); })
+          .attr("y", function (d) { return 6700 - y(d.length); })
+          .attr("dy", "20px")
+          .attr("dx", function (d) { return x(d.x1-d.x0)/2; })
+          .attr("fill", "#fff")
+          .attr("font-size", 10)
+          .attr("text-anchor", "middle")
+          .text(function (d) { return d.length; });
+
+})};
+
+
+
+
+
+
+
+
+
 
 
 
