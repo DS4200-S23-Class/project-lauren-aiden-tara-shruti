@@ -332,13 +332,16 @@ function build_histo_all(band_type) {
                         .thresholds(5)
                         (map)
 
-    const y = d3.scaleLinear()
-                .domain([0, d3.max(histogram.map(function (d) { return d.length; }))])
-                .range([0, VIS_HEIGHT]);
-
     const x = d3.scaleLinear()
                 .domain([0, d3.max(map)])
                 .range([0, VIS_WIDTH]);
+
+ 
+    const y = d3.scaleLinear()
+                .domain([0, d3.max(histogram.map(function (d) { return d.length; }))])
+                .range([VIS_HEIGHT, 0]);
+
+  
 
 
     function  frame_num(band_type){
@@ -373,14 +376,19 @@ function build_histo_all(band_type) {
             .attr("height", VIS_HEIGHT + padding)
 
 
-
+//x axis
     FRAME.append("g")
-            .attr("transform", "translate(0," + VIS_HEIGHT + ")")
+            .attr("transform", "translate(" + MARGINS.left + "," + (VIS_HEIGHT + MARGINS.top) + ")")
             .call(d3.axisBottom(x));
 
 
 
-//// color doesnt work eek 
+// y axis 
+
+    FRAME.append("g")
+            .attr("transform", "translate(" +(x(0) + MARGINS.left) + "," + (MARGINS.bottom) + ")")
+            .call(d3.axisLeft(y));
+
 
     function getColor() {
      if(band_type === "u") {
@@ -404,10 +412,10 @@ function build_histo_all(band_type) {
             .data(histogram)
             .enter()
             .append("rect")
-              .attr("x", function (d) { return x(d.x1-(d.x1-d.x0)); })
-              .attr("y", function (d) { return VIS_HEIGHT - y(d.length); })
+              .attr("x", function (d) { return (x(d.x1-(d.x1-d.x0))) + MARGINS.left;})
+              .attr("y", function (d) { return  (y(d.length)) + MARGINS.top; })
               .attr("width", function (d) { return x(d.x1-d.x0); })
-              .attr("height", function (d) { return y(d.length); })
+              .attr("height", function (d) { return VIS_HEIGHT - y(d.length); })
               .attr("fill", function(d) { return getColor(d);})
 
 
