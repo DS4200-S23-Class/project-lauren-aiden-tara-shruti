@@ -36,7 +36,6 @@ h1 {
 .quasar {
   color: green;
 }
-
 .tooltip {
   position: absolute;
   background-color: royalblue;
@@ -45,6 +44,4 @@ h1 {
   border-radius: 5px;
   padding: 5px;
 }
-
-
 

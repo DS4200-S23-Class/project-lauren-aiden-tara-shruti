@@ -408,33 +408,34 @@ function build_histo_all(band_type) {
               .attr("height", function (d) { return VIS_HEIGHT - y(d.length); })
               .attr("fill", function(d) { return getColor(d);})
               .attr("class", "bar")
-              
+
     // Tooltip
-const TOOLTIP2 = d3.select(frame_num(band_type))
+
+const TOOLTIP = d3.select(frame_num(band_type))
                           .append("div")
-                            .attr("class", "tooltip")
-                            .style("opacity", 0);
+                          .attr("class", "tooltip")
+                          .style("opacity", 0);
 
       // Change color by hovering
-      function handleMouseover2(event, d) {
+      function handleMouseover(event, d) {
         // on mouseover, change color
-        TOOLTIP2.style("opacity", 1);
+        TOOLTIP.style("opacity", 1);
       }
 
       // Show value of each bar with tooltip
       function handleMousemove(event, d) {
-      TOOLTIP2.html("Value: " + d.length)
+      TOOLTIP.html("Value: " + d.length)
               .style("left", (event.pageX + 10) + "px")                                          
               .style("top", (event.pageY - 50) + "px"); 
       }
 
       function handleMouseleave(event, d) {
-        TOOLTIP2.style("opacity", 0);
+        TOOLTIP.style("opacity", 0);
       }
 
 
-      FRAME2.selectAll(".bar")
-            .on("mouseover", handleMouseover2) 
+      FRAME.selectAll(".bar")
+            .on("mouseover", handleMouseover) 
             .on("mousemove", handleMousemove)
             .on("mouseleave", handleMouseleave); //add event listeners
 
