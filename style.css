@@ -38,11 +38,11 @@ h1 {
 }
 
 .bar:hover {
-  fill: black;
+  fill: gainsboro;
 }
 .tooltip {
   position: absolute;
-  background-color: royalblue;
+  background-color: gainsboro;
   border:  solid;
   border-width: 2px;
   border-radius: 5px;
