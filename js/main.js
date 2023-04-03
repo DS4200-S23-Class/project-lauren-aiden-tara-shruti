@@ -285,11 +285,7 @@ function build_bar(options) {
 
   })};
 
-
-// U histogram
-
-
-
+  
 // general function 
 
 function build_histo_all(band_type) {
@@ -412,7 +408,37 @@ function build_histo_all(band_type) {
               .attr("height", function (d) { return VIS_HEIGHT - y(d.length); })
               .attr("fill", function(d) { return getColor(d);})
 
+    // Tooltip
+    const TOOLTIP = d3.select(frame_num(band_type))
+                        .append("div")
+                          .attr("class", "tooltip")
+                          .style("opacity", 0); 
 
+    // Define event handler functions for tooltips
+    function handleMouseover(event, d) {
+      // on mouseover, make opaque 
+      TOOLTIP.style("opacity", 1); 
+      
+    }
+
+    function handleMousemove(event, d) {
+      // position the tooltip and fill in information 
+      TOOLTIP.html("Class: " + d.class + "<br>Value: " + get_band(d, band_type))
+              .style("left", (event.pageX + 10) + "px") //add offset
+                                                          // from mouse
+              .style("top", (event.pageY - 50) + "px"); 
+    }
+
+    function handleMouseleave(event, d) {
+      // on mouseleave, make transparant again 
+      TOOLTIP.style("opacity", 0); 
+    } 
+
+    // Add event listeners
+    FRAME.selectAll(".bar")
+          .on("mouseover", handleMouseover)
+          .on("mousemove", handleMousemove)
+          .on("mouseleave", handleMouseleave);
 
 })};
 
