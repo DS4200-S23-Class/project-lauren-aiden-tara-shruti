@@ -33,20 +33,19 @@ h1 {
 .galaxy {
   color: red;
 }
-
 .quasar {
   color: green;
 }
 
 .bar:hover {
-  fill: yellow;
+  fill: gainsboro;
 }
-
 .tooltip {
   position: absolute;
-  background-color: royalblue;
+  background-color: gainsboro;
   border:  solid;
   border-width: 2px;
   border-radius: 5px;
   padding: 5px;
 }
+
