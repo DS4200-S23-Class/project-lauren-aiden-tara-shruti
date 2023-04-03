@@ -9,6 +9,9 @@ function displayData() {
 
 displayData();
 
+
+
+
 let elems = [];
 button = document.querySelector('#submit-button');
 button.addEventListener('click', setSelectedOptions);
@@ -169,8 +172,8 @@ function build_scatter(options) {
    function updateChart(event) {
         const extent = event.selection;
         k = d3.brush();
-        pts1.classed("selected", function(d) {return isBrushed(extent, (X_SCALE1(d.dec) + MARGINS.left), (Y_SCALE1(d.ra) + MARGINS.top))})};    
-  
+        pts1.classed("selected", function(d) {return isBrushed(extent, (X_SCALE1(d.dec) + MARGINS.left), (Y_SCALE1(d.ra) + MARGINS.top))}) 
+        hist1.classed("selected", function(d) {return isBrushed(extent, (X_SCALE1(d.dec) + MARGINS.left), (Y_SCALE1(d.ra) + MARGINS.top))}); }  
   brushed_points = [];
   // A function that return TRUE or FALSE according if a dot is in the selection or not
    function isBrushed(brush_coords, cx, cy) {
@@ -295,8 +298,6 @@ const FRAME3 = d3.select("#histo1")
 
 // general function 
 
-// Z histogram
-
 function build_histo_all(band_type) {
 
   const padding = 50
@@ -378,10 +379,6 @@ function build_histo_all(band_type) {
             .call(d3.axisBottom(x));
 
 
-    const color = d3.scaleOrdinal()
-                .domain(["u", "g", "r", "i", "z"])
-                .range([ "violet", "teal", "limegreen", "red", "maroon"]);
-
 
 //// color doesnt work eek 
 
@@ -403,7 +400,7 @@ function build_histo_all(band_type) {
             }
       }
 
-    FRAME.selectAll(".bar")
+   hist1 = FRAME.selectAll(".bar")
             .data(histogram)
             .enter()
             .append("rect")
@@ -411,7 +408,7 @@ function build_histo_all(band_type) {
               .attr("y", function (d) { return VIS_HEIGHT - y(d.length); })
               .attr("width", function (d) { return x(d.x1-d.x0); })
               .attr("height", function (d) { return y(d.length); })
-              .attr("fill", function(d) { return color(getColor(d))})
+              .attr("fill", function(d) { return getColor(d);})
 
 
 
@@ -421,12 +418,7 @@ build_histo_all("g");
 build_histo_all("u");
 build_histo_all("r");
 build_histo_all("i");
-
 build_histo_all("z");
-
-
-
-
 
 
 
