@@ -37,3 +37,16 @@ h1 {
 .quasar {
   color: green;
 }
+
+.bar:hover {
+  fill: yellow;
+}
+
+.tooltip {
+  position: absolute;
+  background-color: royalblue;
+  border:  solid;
+  border-width: 2px;
+  border-radius: 5px;
+  padding: 5px;
+}

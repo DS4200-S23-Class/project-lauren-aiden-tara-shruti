@@ -22,7 +22,6 @@ function setSelectedOptions (){
   }
   build_scatter(elems);
   build_bar(elems);
-  build_histo();
 };
 
 
@@ -161,8 +160,8 @@ function build_scatter(options) {
               .attr("class", "point");
 
   // Add brushing
-    FRAME1.call(d3.brush()                 // Add the brush feature using the d3.brush function
-            .extent( [ [0,0], [FRAME_WIDTH, FRAME_HEIGHT] ] ) // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
+    FRAME1.call(d3.brush()           
+            .extent( [ [0,0], [FRAME_WIDTH, FRAME_HEIGHT] ] ) 
             .on("start brush", updateChart) // Each time the brush selection changes, trigger the 'updateChart' function
     );
 
@@ -284,10 +283,17 @@ function build_bar(options) {
   })};
 
 
-function build_histo() {
+// U histogram
+const FRAME3 = d3.select("#histo1")
+                    .append("svg")
+                    .attr("height", FRAME_HEIGHT)
+                    .attr("width", FRAME_WIDTH)
+                    .attr("class", "frame");
 
-  const width = 300
-  const height = 6700
+function build_histo1() {
+
+  // const width = 300
+  // const height = 6700
   const padding = 50
 
   d3.csv("data/SDSS2.csv").then((data) => {
@@ -300,50 +306,290 @@ function build_histo() {
 
     const y = d3.scaleLinear()
                 .domain([0, d3.max(histogram.map(function (d) { return d.length; }))])
-                .range([0, height]);
+                .range([0, VIS_HEIGHT]);
 
     const x = d3.scaleLinear()
                 .domain([0, d3.max(map)])
-                .range([0, width]);
+                .range([0, VIS_WIDTH]);
 
 
-    const canvas = d3.select("#histo").append("svg")
-                                    .attr("width", width)
-                                    .attr("height", height + padding)
-                                    // .append("g")
-                                    //   .attr("transform", "translate(20,0");
-
-    const xAxis = canvas.append("g")
-                    .attr("transform", "translate(0," + height + ")")
-                    .call(d3.axisBottom(x));
+    FRAME3.select("#histo1")
+            .append("svg")
+            .attr("width", VIS_WIDTH)
+            .attr("height", VIS_HEIGHT + padding)
 
 
-    const bars = canvas.selectAll(".bar")
-                        .data(histogram)
-                        .enter()
-                        .append("g")
+    FRAME3.append("g")
+            .attr("transform", "translate(0," + VIS_HEIGHT + ")")
+            .call(d3.axisBottom(x));
 
-    bars.append("rect")
-        .attr("x", function (d) { return x(d.x1-(d.x1-d.x0)); })
-        .attr("y", function (d) { return 6700 - y(d.length); })
-        .attr("width", function (d) { return x(d.x1-d.x0); })
-        .attr("height", function (d) { return y(d.length); })
-        .attr("fill", "steelblue");
 
-     // text for bars, shows the distribution which adds to 450
-    bars.append("text")
-          .attr("x", function (d) { return x(d.x1-(d.x1-d.x0)); })
-          .attr("y", function (d) { return 6700 - y(d.length); })
-          .attr("dy", "20px")
-          .attr("dx", function (d) { return x(d.x1-d.x0)/2; })
-          .attr("fill", "#fff")
-          .attr("font-size", 10)
-          .attr("text-anchor", "middle")
-          .text(function (d) { return d.length; });
+    FRAME3.selectAll(".bar")
+            .data(histogram)
+            .enter()
+            .append("rect")
+              .attr("x", function (d) { return x(d.x1-(d.x1-d.x0)); })
+              .attr("y", function (d) { return VIS_HEIGHT - y(d.length); })
+              .attr("width", function (d) { return x(d.x1-d.x0); })
+              .attr("height", function (d) { return y(d.length); })
+              .attr("fill", "violet");
+
+    // Highlight bars when you hover
+      const TOOLTIP1 = d3.select("#histo1")
+                          .append("div")
+                            .attr("class", "tooltip")
+                            .style("opacity", 0);
+
+      // Change color by hovering
+      function handleMouseover2(event, d) {
+        // on mouseover, change color
+        TOOLTIP1.style("opacity", 1);
+      }
+
+      // Show value of each bar with tooltip
+      function handleMousemove(event, d) {
+      TOOLTIP11.html("Band: " + d.u + "<br>Amount: " + d.length)
+              .style("left", (event.pageX + 10) + "px")                                          
+              .style("top", (event.pageY - 50) + "px"); 
+      }
+
+      function handleMouseleave(event, d) {
+        TOOLTIP1.style("opacity", 0);
+      }
+
+
+      FRAME3.selectAll(".bar")
+            .on("mouseover", handleMouseover2) 
+            .on("mousemove", handleMousemove)
+            .on("mouseleave", handleMouseleave); //add event listeners
+
 
 })};
 
+build_histo1();
 
+
+
+// G histogram
+const FRAME4 = d3.select("#histo2")
+                    .append("svg")
+                    .attr("height", FRAME_HEIGHT)
+                    .attr("width", FRAME_WIDTH)
+                    .attr("class", "frame");
+
+function build_histo2() {
+
+  const padding = 50
+
+  d3.csv("data/SDSS2.csv").then((data) => {
+
+    const map = data.map(function (d) { return parseInt(d.g); })
+
+    const histogram = d3.histogram()
+                        .thresholds(5)
+                        (map)
+
+    const y = d3.scaleLinear()
+                .domain([0, d3.max(histogram.map(function (d) { return d.length; }))])
+                .range([0, VIS_HEIGHT]);
+
+    const x = d3.scaleLinear()
+                .domain([0, d3.max(map)])
+                .range([0, VIS_WIDTH]);
+
+
+    FRAME4.select("#histo2")
+            .append("svg")
+            .attr("width", VIS_WIDTH)
+            .attr("height", VIS_HEIGHT + padding)
+
+
+    FRAME4.append("g")
+            .attr("transform", "translate(0," + VIS_HEIGHT + ")")
+            .call(d3.axisBottom(x));
+
+
+    FRAME4.selectAll(".bar")
+            .data(histogram)
+            .enter()
+            .append("rect")
+              .attr("x", function (d) { return x(d.x1-(d.x1-d.x0)); })
+              .attr("y", function (d) { return VIS_HEIGHT - y(d.length); })
+              .attr("width", function (d) { return x(d.x1-d.x0); })
+              .attr("height", function (d) { return y(d.length); })
+              .attr("fill", "teal"); 
+
+
+
+
+})};
+
+build_histo2();
+
+
+
+// R histogram
+const FRAME5 = d3.select("#histo3")
+                    .append("svg")
+                    .attr("height", FRAME_HEIGHT)
+                    .attr("width", FRAME_WIDTH)
+                    .attr("class", "frame");
+
+function build_histo3() {
+
+  const padding = 50
+
+  d3.csv("data/SDSS2.csv").then((data) => {
+
+    const map = data.map(function (d) { return parseInt(d.r); })
+
+    const histogram = d3.histogram()
+                        .thresholds(5)
+                        (map)
+
+    const y = d3.scaleLinear()
+                .domain([0, d3.max(histogram.map(function (d) { return d.length; }))])
+                .range([0, VIS_HEIGHT]);
+
+    const x = d3.scaleLinear()
+                .domain([0, d3.max(map)])
+                .range([0, VIS_WIDTH]);
+
+
+    FRAME5.select("#histo3")
+            .append("svg")
+            .attr("width", VIS_WIDTH)
+            .attr("height", VIS_HEIGHT + padding)
+
+
+    FRAME5.append("g")
+            .attr("transform", "translate(0," + VIS_HEIGHT + ")")
+            .call(d3.axisBottom(x));
+
+
+    FRAME5.selectAll(".bar")
+            .data(histogram)
+            .enter()
+            .append("rect")
+              .attr("x", function (d) { return x(d.x1-(d.x1-d.x0)); })
+              .attr("y", function (d) { return VIS_HEIGHT - y(d.length); })
+              .attr("width", function (d) { return x(d.x1-d.x0); })
+              .attr("height", function (d) { return y(d.length); })
+              .attr("fill", "limegreen");
+
+})};
+
+build_histo3();
+
+
+
+// I histogram
+const FRAME6 = d3.select("#histo4")
+                    .append("svg")
+                    .attr("height", FRAME_HEIGHT)
+                    .attr("width", FRAME_WIDTH)
+                    .attr("class", "frame");
+
+function build_histo4() {
+
+  const padding = 50
+
+  d3.csv("data/SDSS2.csv").then((data) => {
+
+    const map = data.map(function (d) { return parseInt(d.i); })
+
+    const histogram = d3.histogram()
+                        .thresholds(5)
+                        (map)
+
+    const y = d3.scaleLinear()
+                .domain([0, d3.max(histogram.map(function (d) { return d.length; }))])
+                .range([0, VIS_HEIGHT]);
+
+    const x = d3.scaleLinear()
+                .domain([0, d3.max(map)])
+                .range([0, VIS_WIDTH]);
+
+
+    FRAME6.select("#histo4")
+            .append("svg")
+            .attr("width", VIS_WIDTH)
+            .attr("height", VIS_HEIGHT + padding)
+
+
+    FRAME6.append("g")
+            .attr("transform", "translate(0," + VIS_HEIGHT + ")")
+            .call(d3.axisBottom(x));
+
+
+    FRAME6.selectAll(".bar")
+            .data(histogram)
+            .enter()
+            .append("rect")
+              .attr("x", function (d) { return x(d.x1-(d.x1-d.x0)); })
+              .attr("y", function (d) { return VIS_HEIGHT - y(d.length); })
+              .attr("width", function (d) { return x(d.x1-d.x0); })
+              .attr("height", function (d) { return y(d.length); })
+              .attr("fill", "red");
+
+})};
+
+build_histo4();
+
+
+
+// Z histogram
+const FRAME7 = d3.select("#histo5")
+                    .append("svg")
+                    .attr("height", FRAME_HEIGHT)
+                    .attr("width", FRAME_WIDTH)
+                    .attr("class", "frame");
+
+function build_histo5() {
+
+  const padding = 50
+
+  d3.csv("data/SDSS2.csv").then((data) => {
+
+    const map = data.map(function (d) { return parseInt(d.z); })
+
+    const histogram = d3.histogram()
+                        .thresholds(5)
+                        (map)
+
+    const y = d3.scaleLinear()
+                .domain([0, d3.max(histogram.map(function (d) { return d.length; }))])
+                .range([0, VIS_HEIGHT]);
+
+    const x = d3.scaleLinear()
+                .domain([0, d3.max(map)])
+                .range([0, VIS_WIDTH]);
+
+
+    FRAME7.select("#histo5")
+            .append("svg")
+            .attr("width", VIS_WIDTH)
+            .attr("height", VIS_HEIGHT + padding)
+
+
+    FRAME7.append("g")
+            .attr("transform", "translate(0," + VIS_HEIGHT + ")")
+            .call(d3.axisBottom(x));
+
+
+    FRAME7.selectAll(".bar")
+            .data(histogram)
+            .enter()
+            .append("rect")
+              .attr("x", function (d) { return x(d.x1-(d.x1-d.x0)); })
+              .attr("y", function (d) { return VIS_HEIGHT - y(d.length); })
+              .attr("width", function (d) { return x(d.x1-d.x0); })
+              .attr("height", function (d) { return y(d.length); })
+              .attr("fill", "maroon");
+
+})};
+
+build_histo5();
 
 
 
