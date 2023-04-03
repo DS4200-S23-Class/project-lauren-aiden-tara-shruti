@@ -407,38 +407,36 @@ function build_histo_all(band_type) {
               .attr("width", function (d) { return x(d.x1-d.x0); })
               .attr("height", function (d) { return VIS_HEIGHT - y(d.length); })
               .attr("fill", function(d) { return getColor(d);})
-
+              .attr("class", "bar")
+              
     // Tooltip
-    const TOOLTIP = d3.select(frame_num(band_type))
-                        .append("div")
-                          .attr("class", "tooltip")
-                          .style("opacity", 0); 
+const TOOLTIP2 = d3.select(frame_num(band_type))
+                          .append("div")
+                            .attr("class", "tooltip")
+                            .style("opacity", 0);
 
-    // Define event handler functions for tooltips
-    function handleMouseover(event, d) {
-      // on mouseover, make opaque 
-      TOOLTIP.style("opacity", 1); 
-      
-    }
+      // Change color by hovering
+      function handleMouseover2(event, d) {
+        // on mouseover, change color
+        TOOLTIP2.style("opacity", 1);
+      }
 
-    function handleMousemove(event, d) {
-      // position the tooltip and fill in information 
-      TOOLTIP.html("Class: " + d.class + "<br>Value: " + get_band(d, band_type))
-              .style("left", (event.pageX + 10) + "px") //add offset
-                                                          // from mouse
+      // Show value of each bar with tooltip
+      function handleMousemove(event, d) {
+      TOOLTIP2.html("Value: " + d.length)
+              .style("left", (event.pageX + 10) + "px")                                          
               .style("top", (event.pageY - 50) + "px"); 
-    }
+      }
 
-    function handleMouseleave(event, d) {
-      // on mouseleave, make transparant again 
-      TOOLTIP.style("opacity", 0); 
-    } 
+      function handleMouseleave(event, d) {
+        TOOLTIP2.style("opacity", 0);
+      }
 
-    // Add event listeners
-    FRAME.selectAll(".bar")
-          .on("mouseover", handleMouseover)
-          .on("mousemove", handleMousemove)
-          .on("mouseleave", handleMouseleave);
+
+      FRAME2.selectAll(".bar")
+            .on("mouseover", handleMouseover2) 
+            .on("mousemove", handleMousemove)
+            .on("mouseleave", handleMouseleave); //add event listeners
 
 })};
 
