@@ -183,7 +183,7 @@ function build_scatter(options) {
           y1 = brush_coords[1][1];
 
           if (x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1) {
-           brushed_points.push(cx);
+           brushed_points.push("(" + cx + "," + cy + ")");
            };
 
            console.log(brushed_points);
@@ -287,12 +287,6 @@ function build_bar(options) {
 
 
 // U histogram
-const FRAME3 = d3.select("#histo1")
-                    .append("svg")
-                    .attr("height", FRAME_HEIGHT)
-                    .attr("width", FRAME_WIDTH)
-                    .attr("class", "frame");
-
 
 
 
