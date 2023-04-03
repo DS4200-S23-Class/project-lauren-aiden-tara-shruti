@@ -12,6 +12,7 @@ displayData();
 
 
 
+
 let elems = [];
 button = document.querySelector('#submit-button');
 button.addEventListener('click', setSelectedOptions);
@@ -25,10 +26,11 @@ function setSelectedOptions (){
   }
   build_scatter(elems);
   build_bar(elems);
+  build_bar(brushed_points);
 };
 
 
-
+brushed_points = [];
 classes = ["STAR", "GALAXY", "QSO" ];
 
 console.log(elems);
@@ -58,7 +60,7 @@ const FRAME2 = d3.select("#bar")
 
  
 function build_scatter(options) {
-  console.log(options);
+ 
   // Open file
   d3.csv("data/SDSS2.csv").then((data) => {
     
@@ -167,37 +169,41 @@ function build_scatter(options) {
             .extent( [ [0,0], [FRAME_WIDTH, FRAME_HEIGHT] ] ) 
             .on("start brush", updateChart) // Each time the brush selection changes, trigger the 'updateChart' function
     );
-
+  
+  
   //Function that is triggered when brushing is performed
    function updateChart(event) {
         const extent = event.selection;
         k = d3.brush();
-        pts1.classed("selected", function(d) {return isBrushed(extent, (X_SCALE1(d.dec) + MARGINS.left), (Y_SCALE1(d.ra) + MARGINS.top))}) 
-        hist1.classed("selected", function(d) {return isBrushed(extent, (X_SCALE1(d.dec) + MARGINS.left), (Y_SCALE1(d.ra) + MARGINS.top))}); }  
-  brushed_points = [];
+        pts1.classed("selected", function(d) {return isBrushed(extent, (X_SCALE1(d.dec) + MARGINS.left), (Y_SCALE1(d.ra) + MARGINS.top), d.dec, d. ra, d.class, d.redshift)}) 
+        //hist1.classed("selected", function(d) {return isBrushed(extent, (X_SCALE1(d.dec) + MARGINS.left), (Y_SCALE1(d.ra) + MARGINS.top), d.dec, d.ra, d.class, d.redshift)})
+        brushed_points = []; }  
+  
   // A function that return TRUE or FALSE according if a dot is in the selection or not
-   function isBrushed(brush_coords, cx, cy) {
+   function isBrushed(brush_coords, cx, cy, d_x, d_y, d_class, redshift) {
+      //brushed_points = []
        const x0 = brush_coords[0][0],
           x1 = brush_coords[1][0],
           y0 = brush_coords[0][1],
           y1 = brush_coords[1][1];
 
           if (x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1) {
-           brushed_points.push("(" + cx + "," + cy + ")");
+           brushed_points.push("(" + d_x + "," + d_y + "," + d_class + "," + redshift + ")");
            };
-
-           console.log(brushed_points);
+           console.log(brushed_points)
         
       return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1};   // This return TRUE or FALSE depending on if the points is in the selected area
       console.log(brushed_points);
 })};
 
-build_scatter(elems);
-
+console.log(brushed_points)
 
 function build_bar(options) {
+  
   // Read data and create bar plot
   d3.csv("data/SDSS2.csv").then((data) => {
+ 
+    d3.selectAll("bar").remove();
 
     // Define scale functions that maps our data x values 
       // (domain) to pixel values (range)
@@ -285,7 +291,7 @@ function build_bar(options) {
 
   })};
 
-
+build_bar(brushed_points);
 // U histogram
 
 
