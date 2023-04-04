@@ -160,7 +160,7 @@ function build_a_bar(brushed_data) {
   
   const y = d3.scaleBand()
     .domain(['STAR', 'GALAXY', 'QSO'])
-    .range([0, FRAME_HEIGHT])
+    .range([0, FRAME_HEIGHT - MARGINS.top - MARGINS.bottom])
     .padding(0.1);
 
   const x = d3.scaleLinear()
@@ -176,6 +176,17 @@ function build_a_bar(brushed_data) {
     .attr("transform", `translate(${MARGINS.left}, ${MARGINS.top})`)
     .call(yAxis);
 
+  // Define the x axis
+  const xAxis = d3.axisBottom(x)
+    .ticks(5)
+    .tickFormat(d => `${d}`);
+
+  // Append the x axis to the SVG element
+  FRAME2.append("g")
+    .attr("class", "x-axis")
+    .attr("transform", `translate(${MARGINS.left}, ${FRAME_HEIGHT - MARGINS.bottom})`)
+    .call(xAxis);
+
   // Add the bars to the chart
   FRAME2.append('g')
     .attr('class', 'bars')
@@ -187,8 +198,10 @@ function build_a_bar(brushed_data) {
     .attr('x', 0)
     .attr('y', d => y(d[0]))
     .attr('width', d => x(d[1]))
-    .attr('height', y.bandwidth());
+    .attr('height', y.bandwidth())
+    .attr('fill', d => COLOR_SCALE(d[0]));
 }
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function build_scatter(options) {
@@ -494,7 +507,6 @@ build_histo_all("u");
 build_histo_all("r");
 build_histo_all("i");
 build_histo_all("z");
-
 
 
 
