@@ -31,7 +31,7 @@ build_bar(brushed_points);
 brushed_points = [];
 classes = ["STAR", "GALAXY", "QSO" ];
 
-console.log(elems);
+console.log(elems)
 
 
 // Constants for visualizations
@@ -179,7 +179,7 @@ d3.csv("data/SDSS2.csv").then((data) => {
 
 // A function that return TRUE or FALSE according if a dot is in the selection or not
  function isBrushed(brush_coords, cx, cy, d_x, d_y, d_class, redshift) {
-    //brushed_points = []
+    //brushed_points = [] 
      const x0 = brush_coords[0][0],
         x1 = brush_coords[1][0],
         y0 = brush_coords[0][1],
@@ -188,7 +188,7 @@ d3.csv("data/SDSS2.csv").then((data) => {
         if (x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1) {
          brushed_points.push("(" + d_x + "," + d_y + "," + d_class + "," + redshift + ")");
          };
-         console.log(brushed_points)
+          console.log(brushed_points)
       
     return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1};   // This return TRUE or FALSE depending on if the points is in the selected area
     console.log(brushed_points);
