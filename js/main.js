@@ -415,12 +415,14 @@ d3.csv("data/SDSS2.csv").then((data) => {
             .attr("width", function (d) { return x(d.x1-d.x0); })
             .attr("height", function (d) { return VIS_HEIGHT - y(d.length); })
             .attr("fill", function(d) { return getColor(d);})
+            .attr("class", "bar")
 
 
 const TOOLTIP = d3.select(frame_num(band_type))
                           .append("div")
                           .attr("class", "tooltip")
                           .style("opacity", 0);
+
 
       // Change color by hovering
       function handleMouseover(event, d) {
