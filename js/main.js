@@ -375,8 +375,9 @@ d3.csv("data/SDSS2.csv").then((data) => {
             return d.z;
           }
     }
-
-  const map = data.map(function (d) { return parseInt(get_band(d, band_type))})
+  
+  // Subtract 13 to remove white space from histogram on x axis
+  const map = data.map(function (d) { return (parseInt(get_band(d, band_type)) - 13)})
 
  
 
@@ -386,7 +387,7 @@ d3.csv("data/SDSS2.csv").then((data) => {
 
   const x = d3.scaleLinear()
               .domain([0, d3.max(map)])
-              .range([0, VIS_WIDTH]);
+              .range([0, 250]);
 
 
   const y = d3.scaleLinear()
@@ -418,22 +419,23 @@ d3.csv("data/SDSS2.csv").then((data) => {
    const FRAME = d3.select(frame_num(band_type))
                   .append("svg")
                   .attr("height", FRAME_HEIGHT)
-                  .attr("width", FRAME_WIDTH)
+                  .attr("width", 350)
                   .attr("class", "frame");
 
             
   FRAME.select(frame_num(band_type))
           .append("svg")
-          .attr("width", VIS_WIDTH)
+          .attr("width", 350)
           .attr("height", VIS_HEIGHT + padding)
 
 
-//x axis
-  FRAME.append("g")
-          .attr("transform", "translate(" + MARGINS.left + "," + (VIS_HEIGHT + MARGINS.top) + ")")
-          .call(d3.axisBottom(x));
-
-
+  // Add x axis and relabel ticks to make depiction of data accurate, from subtracting 13 earlier
+  FRAME.append("g") 
+            .attr("transform", "translate(" + MARGINS.left + 
+            "," + (VIS_HEIGHT + MARGINS.top) + ")") 
+            .call(d3.axisBottom(x).tickValues([0, 1, 2, 3, 4, 5, 6])
+                                 .tickFormat((d, i) => [13, 14, 15, 16, 17, 18, 19] [i])) 
+            .attr("font-size", '10px');
 
 // y axis 
 
@@ -486,7 +488,8 @@ const TOOLTIP = d3.select(frame_num(band_type))
 
       // Show value of each bar with tooltip
       function handleMousemove(event, d) {
-      TOOLTIP.html("Count: " + d.length + " out of 450" + " (" + (d.length/450)*100 + "%)")
+      TOOLTIP.html("Count: " + d.length + " out of 450" + " (" 
+                  + Math.round(((d.length/450)*100 + Number.EPSILON) * 100) / 100 + "%)")  // Math function rounds to two decimals
               .style("left", (event.pageX + 10) + "px")                                          
               .style("top", (event.pageY - 50) + "px"); 
       }
@@ -507,12 +510,4 @@ build_histo_all("u");
 build_histo_all("r");
 build_histo_all("i");
 build_histo_all("z");
-
-
-
-
-
-
-
-
 
