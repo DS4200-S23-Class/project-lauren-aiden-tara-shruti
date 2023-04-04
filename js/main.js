@@ -387,7 +387,7 @@ d3.csv("data/SDSS2.csv").then((data) => {
 
   const x = d3.scaleLinear()
               .domain([0, d3.max(map)])
-              .range([0, 250]);
+              .range([0, 280]);
 
 
   const y = d3.scaleLinear()
@@ -419,13 +419,13 @@ d3.csv("data/SDSS2.csv").then((data) => {
    const FRAME = d3.select(frame_num(band_type))
                   .append("svg")
                   .attr("height", FRAME_HEIGHT)
-                  .attr("width", 350)
+                  .attr("width", 380)
                   .attr("class", "frame");
 
             
   FRAME.select(frame_num(band_type))
           .append("svg")
-          .attr("width", 350)
+          .attr("width", 380)
           .attr("height", VIS_HEIGHT + padding)
 
 

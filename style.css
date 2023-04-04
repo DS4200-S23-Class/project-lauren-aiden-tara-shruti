@@ -8,10 +8,57 @@ h1 {
 
 h3 {
   text-align: center;
-}
+} 
 
 .row {
   display: flex; 
+  flex-direction: row;
+	justify-content: space-around;
+	align-items: center;
+	align-content: center;
+}
+
+.row1 {
+  display: flex; 
+  flex-direction: row;
+	justify-content: space-around;
+	align-items: center;
+	align-content: center;
+}
+
+.row2 {
+  display: flex; 
+  flex-direction: row;
+	justify-content: space-around;
+	align-items: center;
+	align-content: center;
+}
+
+/* Set each column of first row of histgrams to 1/3 */
+#col1 {
+  width: 33%;
+  min-height: 400px;
+}
+
+#col2 {
+  width: 33%;
+  min-height: 400px;
+}
+
+#col3 {
+  width: 33%;
+  min-height: 400px;
+}
+
+/* Set each column of second row of histgrams to 1/3 */
+#col4 {
+  width: 33%;
+  min-height: 400px;
+}
+
+#col5 {
+  width: 33%;
+  min-height: 400px;
 }
 
 .left {
