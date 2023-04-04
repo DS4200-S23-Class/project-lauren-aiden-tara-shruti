@@ -486,7 +486,7 @@ const TOOLTIP = d3.select(frame_num(band_type))
 
       // Show value of each bar with tooltip
       function handleMousemove(event, d) {
-      TOOLTIP.html("Count: " + d.length)
+      TOOLTIP.html("Count: " + d.length + " out of 450" + " (" + (d.length/450)*100 + "%)")
               .style("left", (event.pageX + 10) + "px")                                          
               .style("top", (event.pageY - 50) + "px"); 
       }
