@@ -4,34 +4,30 @@ function displayData() {
   d3.csv("data/SDSS2.csv", fileEncoding="UTF-8-BOM").then((data) => {
   
     // check for our data
-    console.log(data);
+    //console.log(data);
   })}
 
 displayData();
-
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 let elems = [];
 button = document.querySelector('#submit-button');
 button.addEventListener('click', setSelectedOptions);
 
 function setSelectedOptions (){
-let elems = [];
 let choices = document.querySelectorAll('input:checked');
-
 for (let i = 0; i < choices.length; i++) {
   elems.push(choices[i].value);
 }
 build_scatter(elems);
-build_bar(elems);
-build_bar(brushed_points);
+//build_bar(elems);
+//build_bar(brushed_points);
 };
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-brushed_points = [];
+let brushed_points = [];
 classes = ["STAR", "GALAXY", "QSO" ];
-
-console.log(elems)
 
 
 // Constants for visualizations
@@ -55,8 +51,160 @@ const FRAME2 = d3.select("#bar")
                   .attr("width", FRAME_WIDTH)
                   .attr("class", "frame");
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function build_bar(data) {
+
+// Read data and create bar plot
+d3.csv("data/SDSS2.csv").then((data) => {
+
+  d3.selectAll("bar").remove();
+
+  // Define scale functions that maps our data x values 
+    // (domain) to pixel values (range)
+    const X_SCALE_CLASS = d3.scaleBand()   
+                              .range([0, VIS_WIDTH])
+                              .domain(data.map((d) => { return d.class; }))
+                              .padding(0.2); 
+
+    // Define scale functions that maps our data y values
+    // (domain) to pixel values (range)
+    const Y_SCALE_CLASS = d3.scaleLinear()
+                              .domain([0,.42])
+                               .range([VIS_HEIGHT, 0]);
+
+    function get_redshift(d) {                          
+    if(d.class === "STAR") {
+            return 0.0002102389190283399;
+          } else if (d.class === "GALAXY") {
+            return 0.08036230192708328;
+          } else if (d.class === "QSO"){
+            return 0.4103186918181818;
+          }}
+          
+
+    // Use X_SCALE_CLASS and Y_SCALE_CLASS to plot graph
+    let bars = FRAME2.selectAll("bars")  
+        .data(data) // passed from .then  
+        .enter()       
+        .append("rect")
+          .attr("x", (d) => { return (X_SCALE_CLASS(d.class) + MARGINS.left); })
+          .attr("width", X_SCALE_CLASS.bandwidth())
+          .attr("y", (d) => { return Y_SCALE_CLASS(get_redshift(d)) + MARGINS.top})   
+          .attr("height", (d) => {return VIS_HEIGHT - Y_SCALE_CLASS(get_redshift(d))})
+          .attr("fill", function (d) {
+            if(d.class === "STAR") {
+            return "royalblue";
+          } else if (d.class === "GALAXY") {
+            return "red";
+          } else {
+            return "green";
+          }
+          })
+          .append("text")
+            .text(function(d) {                 
+                  return d.class;
+            })
+         .attr("text-anchor", "middle")
+          .attr("class", "bar");
+
+    FRAME2.append("text")
+            .attr("x", 100)
+            .attr("y", 243)
+            .attr("font-size", 10)
+            .attr("fill", "royalblue")
+            .text("0.0002"); 
+
+    FRAME2.append("text")
+            .attr("x", 210)
+            .attr("y", 205)
+            .attr("font-size", 10)
+            .attr("fill", "red")
+            .text(".0804");
 
 
+    FRAME2.append("text")
+            .attr("x", 320)
+            .attr("y", 50)
+            .attr("font-size", 10)
+            .attr("fill", "green")
+            .text("0.4103");
+
+    // Add x axis to vis
+    FRAME2.append("g") 
+    .attr("transform", "translate(" + MARGINS.left + 
+          "," + (VIS_HEIGHT + MARGINS.top) + ")") 
+    .call(d3.axisBottom(X_SCALE_CLASS).ticks(3)) 
+      .attr("font-size", '10px'); 
+
+    // Add y axis to vis
+    FRAME2.append("g") 
+    .attr("transform", "translate(" + MARGINS.bottom + 
+          "," + (MARGINS.top) + ")") 
+    .call(d3.axisLeft(Y_SCALE_CLASS).ticks(8)) 
+      .attr("font-size", '10px'); 
+
+})};
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function build_a_bar(brushed_data) {
+
+  d3.selectAll("bars").remove();
+
+  const objects = brushed_data.map(d => {
+    const [x, y, cls, value] = d.slice(1, -1).split(',');
+    return { x: +x, y: +y, class: cls, value: +value };
+  });
+  
+  // Group the objects by class and compute the mean value
+  const groups = d3.group(objects, d => d.class);
+  const means = new Map([...groups].map(([cls, objects]) => [cls, d3.mean(objects, d => d.value)]));
+  
+  const x = d3.scaleLinear()
+  .domain([0, d3.max([...means.values()])])
+  .range([0, FRAME_WIDTH]);
+
+  const y = d3.scaleBand()
+    .domain(['STAR', 'GALAXY', 'QSO'])
+    .range([FRAME_HEIGHT, 0])
+    .padding(0.1);
+
+  // Define the x and y scales
+var xScale = d3.scaleBand()
+.domain(["STAR", "GALAXY", "QSO"])
+.range([0, FRAME_WIDTH])
+.padding(0.2);
+
+var yScale = d3.scaleLinear()
+.domain([0, d3.max(brushed_data, function(d) { return d.value; })])
+.range([FRAME_HEIGHT, 0]);
+
+// Define the x and y axes
+var xAxis = d3.axisBottom(xScale);
+
+var yAxis = d3.axisLeft(yScale);
+
+// Append the x and y axes to the SVG element
+FRAME2.append("g")
+.attr("transform", "translate(0," + FRAME_HEIGHT + ")")
+.call(xAxis);
+
+FRAME2.append("g")
+.call(yAxis);
+
+// Add the bars to the chart
+FRAME2.append('g')
+  .attr('transform', `translate(${MARGINS.left},${MARGINS.top})`)
+  .selectAll('rect')
+  .data([...means.entries()])
+  .enter()
+  .append('rect')
+  .attr('x', 0)
+  .attr('y', d => y(d[0]))
+  .attr('width', d => x(d[1]))
+  .attr('height', y.bandwidth());
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function build_scatter(options) {
 
 // Open file
@@ -65,7 +213,6 @@ d3.csv("data/SDSS2.csv").then((data) => {
   d3.selectAll("svg > *").remove();
 
   // console.log(options[0])
-  console.log(data);
   filteredData = [];
   for (let i = 0; i < options.length; i++) {
     const option = options[i];
@@ -175,7 +322,9 @@ d3.csv("data/SDSS2.csv").then((data) => {
       k = d3.brush();
       pts1.classed("selected", function(d) {return isBrushed(extent, (X_SCALE1(d.dec) + MARGINS.left), (Y_SCALE1(d.ra) + MARGINS.top), d.dec, d. ra, d.class, d.redshift)}) 
       //hist1.classed("selected", function(d) {return isBrushed(extent, (X_SCALE1(d.dec) + MARGINS.left), (Y_SCALE1(d.ra) + MARGINS.top), d.dec, d.ra, d.class, d.redshift)})
-      brushed_points = []; }  
+      console.log(brushed_points);
+      build_a_bar(brushed_points);
+      brushed_points = []}  
 
 // A function that return TRUE or FALSE according if a dot is in the selection or not
  function isBrushed(brush_coords, cx, cy, d_x, d_y, d_class, redshift) {
@@ -188,108 +337,14 @@ d3.csv("data/SDSS2.csv").then((data) => {
         if (x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1) {
          brushed_points.push("(" + d_x + "," + d_y + "," + d_class + "," + redshift + ")");
          };
-          console.log(brushed_points)
+          
       
-    return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1};   // This return TRUE or FALSE depending on if the points is in the selected area
-    console.log(brushed_points);
-})};
+    return brushed_points, x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1};   // This return TRUE or FALSE depending on if the points is in the selected area
+    //console.log(brushed_points);
+})
+return brushed_points};
 
 console.log(brushed_points)
-
-function build_bar(options) {
-
-// Read data and create bar plot
-d3.csv("data/SDSS2.csv").then((data) => {
-
-  d3.selectAll("bar").remove();
-
-  // Define scale functions that maps our data x values 
-    // (domain) to pixel values (range)
-    const X_SCALE_CLASS = d3.scaleBand()   
-                              .range([0, VIS_WIDTH])
-                              .domain(data.map((d) => { return d.class; }))
-                              .padding(0.2); 
-
-    // Define scale functions that maps our data y values
-    // (domain) to pixel values (range)
-    const Y_SCALE_CLASS = d3.scaleLinear()
-                              .domain([0,.42])
-                               .range([VIS_HEIGHT, 0]);
-
-    function get_redshift(d) {                          
-    if(d.class === "STAR") {
-            return 0.0002102389190283399;
-          } else if (d.class === "GALAXY") {
-            return 0.08036230192708328;
-          } else if (d.class === "QSO"){
-            return 0.4103186918181818;
-          }}
-          
-
-    // Use X_SCALE_CLASS and Y_SCALE_CLASS to plot graph
-    let bars = FRAME2.selectAll("bars")  
-        .data(data) // passed from .then  
-        .enter()       
-        .append("rect")
-          .attr("x", (d) => { return (X_SCALE_CLASS(d.class) + MARGINS.left); })
-          .attr("width", X_SCALE_CLASS.bandwidth())
-          .attr("y", (d) => { return Y_SCALE_CLASS(get_redshift(d)) + MARGINS.top})   
-          .attr("height", (d) => {return VIS_HEIGHT - Y_SCALE_CLASS(get_redshift(d))})
-          .attr("fill", function (d) {
-            if(d.class === "STAR") {
-            return "royalblue";
-          } else if (d.class === "GALAXY") {
-            return "red";
-          } else {
-            return "green";
-          }
-          })
-          .append("text")
-            .text(function(d) {                 
-                  return d.class;
-            })
-         .attr("text-anchor", "middle")
-          .attr("class", "bar");
-
-    FRAME2.append("text")
-            .attr("x", 100)
-            .attr("y", 243)
-            .attr("font-size", 10)
-            .attr("fill", "royalblue")
-            .text("0.0002"); 
-
-    FRAME2.append("text")
-            .attr("x", 210)
-            .attr("y", 205)
-            .attr("font-size", 10)
-            .attr("fill", "red")
-            .text(".0804");
-
-
-    FRAME2.append("text")
-            .attr("x", 320)
-            .attr("y", 50)
-            .attr("font-size", 10)
-            .attr("fill", "green")
-            .text("0.4103");
-
-    // Add x axis to vis
-    FRAME2.append("g") 
-    .attr("transform", "translate(" + MARGINS.left + 
-          "," + (VIS_HEIGHT + MARGINS.top) + ")") 
-    .call(d3.axisBottom(X_SCALE_CLASS).ticks(3)) 
-      .attr("font-size", '10px'); 
-
-    // Add y axis to vis
-    FRAME2.append("g") 
-    .attr("transform", "translate(" + MARGINS.bottom + 
-          "," + (MARGINS.top) + ")") 
-    .call(d3.axisLeft(Y_SCALE_CLASS).ticks(8)) 
-      .attr("font-size", '10px'); 
-
-})};
-
-build_bar(brushed_points);
 // U histogram
 
 
@@ -342,7 +397,7 @@ d3.csv("data/SDSS2.csv").then((data) => {
 
 
 
-  function  frame_num(band_type){
+  function frame_num(band_type){
     if(band_type === "u") {
             return "#histo1";
           } 
