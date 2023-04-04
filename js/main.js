@@ -147,7 +147,7 @@ d3.csv("data/SDSS2.csv").then((data) => {
 })};
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function build_a_bar(brushed_data) {
-  d3.selectAll(".bar").remove();
+  // d3.selectAll(".bar").remove();
 
   const objects = brushed_data.map(d => {
     const [x, y, cls, value] = d.slice(1, -1).split(',');
@@ -209,7 +209,7 @@ function build_scatter(options) {
 // Open file
 d3.csv("data/SDSS2.csv").then((data) => {
   
-  d3.selectAll("svg > *").remove();
+  // d3.selectAll("svg > *").remove();
 
   // console.log(options[0])
   filteredData = [];
