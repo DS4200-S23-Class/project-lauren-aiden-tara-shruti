@@ -11,8 +11,6 @@ displayData();
 
 
 
-
-
 let elems = [];
 button = document.querySelector('#submit-button');
 button.addEventListener('click', setSelectedOptions);
@@ -419,7 +417,33 @@ d3.csv("data/SDSS2.csv").then((data) => {
             .attr("fill", function(d) { return getColor(d);})
 
 
+const TOOLTIP = d3.select(frame_num(band_type))
+                          .append("div")
+                          .attr("class", "tooltip")
+                          .style("opacity", 0);
 
+      // Change color by hovering
+      function handleMouseover(event, d) {
+        // on mouseover, change color
+        TOOLTIP.style("opacity", 1);
+      }
+
+      // Show value of each bar with tooltip
+      function handleMousemove(event, d) {
+      TOOLTIP.html("Count: " + d.length)
+              .style("left", (event.pageX + 10) + "px")                                          
+              .style("top", (event.pageY - 50) + "px"); 
+      }
+
+      function handleMouseleave(event, d) {
+        TOOLTIP.style("opacity", 0);
+      }
+
+
+      FRAME.selectAll(".bar")
+            .on("mouseover", handleMouseover) 
+            .on("mousemove", handleMousemove)
+            .on("mouseleave", handleMouseleave); //add event listeners
 })};
 
 build_histo_all("g");
@@ -427,7 +451,6 @@ build_histo_all("u");
 build_histo_all("r");
 build_histo_all("i");
 build_histo_all("z");
-
 
 
 
