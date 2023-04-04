@@ -146,10 +146,8 @@ d3.csv("data/SDSS2.csv").then((data) => {
 
 })};
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 function build_a_bar(brushed_data) {
-
-  d3.selectAll("bars").remove();
+  d3.selectAll(".bar").remove();
 
   const objects = brushed_data.map(d => {
     const [x, y, cls, value] = d.slice(1, -1).split(',');
@@ -160,50 +158,38 @@ function build_a_bar(brushed_data) {
   const groups = d3.group(objects, d => d.class);
   const means = new Map([...groups].map(([cls, objects]) => [cls, d3.mean(objects, d => d.value)]));
   
-  const x = d3.scaleLinear()
-  .domain([0, d3.max([...means.values()])])
-  .range([0, FRAME_WIDTH]);
-
   const y = d3.scaleBand()
     .domain(['STAR', 'GALAXY', 'QSO'])
-    .range([FRAME_HEIGHT, 0])
+    .range([0, FRAME_HEIGHT])
     .padding(0.1);
 
-  // Define the x and y scales
-var xScale = d3.scaleBand()
-.domain(["STAR", "GALAXY", "QSO"])
-.range([0, FRAME_WIDTH])
-.padding(0.2);
+  const x = d3.scaleLinear()
+    .domain([0, d3.max([...means.values()])])
+    .range([0, FRAME_WIDTH - MARGINS.left - MARGINS.right]);
 
-var yScale = d3.scaleLinear()
-.domain([0, d3.max(brushed_data, function(d) { return d.value; })])
-.range([FRAME_HEIGHT, 0]);
+  // Define the y axis
+  const yAxis = d3.axisLeft(y);
 
-// Define the x and y axes
-var xAxis = d3.axisBottom(xScale);
+  // Append the y axis to the SVG element
+  FRAME2.append("g")
+    .attr("class", "y-axis")
+    .attr("transform", `translate(${MARGINS.left}, ${MARGINS.top})`)
+    .call(yAxis);
 
-var yAxis = d3.axisLeft(yScale);
-
-// Append the x and y axes to the SVG element
-FRAME2.append("g")
-.attr("transform", "translate(0," + FRAME_HEIGHT + ")")
-.call(xAxis);
-
-FRAME2.append("g")
-.call(yAxis);
-
-// Add the bars to the chart
-FRAME2.append('g')
-  .attr('transform', `translate(${MARGINS.left},${MARGINS.top})`)
-  .selectAll('rect')
-  .data([...means.entries()])
-  .enter()
-  .append('rect')
-  .attr('x', 0)
-  .attr('y', d => y(d[0]))
-  .attr('width', d => x(d[1]))
-  .attr('height', y.bandwidth());
+  // Add the bars to the chart
+  FRAME2.append('g')
+    .attr('class', 'bars')
+    .attr('transform', `translate(${MARGINS.left}, ${MARGINS.top})`)
+    .selectAll('rect')
+    .data([...means.entries()])
+    .enter()
+    .append('rect')
+    .attr('x', 0)
+    .attr('y', d => y(d[0]))
+    .attr('width', d => x(d[1]))
+    .attr('height', y.bandwidth());
 }
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function build_scatter(options) {
 
