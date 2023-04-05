@@ -227,7 +227,7 @@ d3.csv("data/SDSS2.csv").then((data) => {
       pts1.classed("selected", function(d) {return isBrushed(extent, (X_SCALE1(d.dec) + MARGINS.left), (Y_SCALE1(d.ra) + MARGINS.top), d.dec, d. ra, d.class, d.redshift)});
       console.log(brushed_points);
       build_a_bar(brushed_points);
-      brushed_points = []
+      brushed_points = [];
     };  
 
  // Function that return TRUE or FALSE according if a dot is in the selection or not
@@ -251,7 +251,7 @@ d3.csv("data/SDSS2.csv").then((data) => {
 function build_histo_all(band_type) {
 
   // Set padding to be used for making the visualizations
-  const padding = 50
+  const padding = 50;
 
   d3.csv("data/SDSS2.csv").then((data) => {
 
