@@ -283,12 +283,12 @@ function build_histo_all(band_type) {
                         .thresholds(5)
                         (map);
 
-    const X_SCALE = d3.scaleLinear()
+    const x = d3.scaleLinear()
                 .domain([0, d3.max(map)])
                 .range([0, 280]);
 
 
-    const Y_SCALE = d3.scaleLinear()
+    const y = d3.scaleLinear()
                 .domain([0, d3.max(histogram.map(function (d) { return d.length; }))])
                 .range([VIS_HEIGHT, 0]);
 
@@ -329,14 +329,14 @@ function build_histo_all(band_type) {
     FRAME.append("g") 
               .attr("transform", "translate(" + MARGINS.left + 
               "," + (VIS_HEIGHT + MARGINS.top) + ")") 
-              .call(d3.axisBottom(X_SCALE).tickValues([0, 1, 2, 3, 4, 5, 6])
+              .call(d3.axisBottom(x).tickValues([0, 1, 2, 3, 4, 5, 6])
                                    .tickFormat((d, i) => [13, 14, 15, 16, 17, 18, 19] [i])) 
               .attr("font-size", '10px');
 
     // Add y-axis 
     FRAME.append("g")
-            .attr("transform", "translate(" +(X_SCALE(0) + MARGINS.left) + "," + (MARGINS.bottom) + ")")
-            .call(d3.axisLeft(Y_SCALE));
+            .attr("transform", "translate(" +(x(0) + MARGINS.left) + "," + (MARGINS.bottom) + ")")
+            .call(d3.axisLeft(y));
 
     // Function to return which color the histogram belongs to based off its band type
     function getColor() {
@@ -378,7 +378,6 @@ function build_histo_all(band_type) {
 
     // Change color by hovering
     function handleMouseover(event, d) {
-      
       // on mouseover, change color
       TOOLTIP.style("opacity", 1);
     };
@@ -408,4 +407,3 @@ build_histo_all("u");
 build_histo_all("r");
 build_histo_all("i");
 build_histo_all("z");
-
