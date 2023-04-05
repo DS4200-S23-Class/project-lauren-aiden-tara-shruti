@@ -23,7 +23,7 @@ let choices = document.querySelectorAll('input:checked');
 for (let i = 0; i < choices.length; i++) {
   elems.push(choices[i].value);
 }
-build_scatter(elems);
+build_scatter(elems);    
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -40,7 +40,7 @@ const VIS_HEIGHT = FRAME_HEIGHT - MARGINS.top - MARGINS.bottom;
 const VIS_WIDTH = FRAME_WIDTH - MARGINS.left - MARGINS.right; 
 
 
-// Scatterplot Frame
+// Scatterplot Frame 
 const FRAME1 = d3.select("#scatter")
                 .append("svg")
                   .attr("height", FRAME_HEIGHT)
@@ -102,7 +102,6 @@ function build_a_bar(brushed_data) {
     .attr("class", "y-axis")
     .attr("transform", `translate(${MARGINS.left}, ${MARGINS.top})`)
     .call(yAxis);
-
 
   // Add the bars to the chart
   FRAME2.append('g')
