@@ -1,15 +1,33 @@
 body {
     font-family: Times New Roman;
-    background-color: #B9D9EB;
+    background-image: linear-gradient(to bottom left, black,  midnightblue);
+    color: white;
 }
 
 h1 {
     text-align: center;
 }
 
+h2 {
+    text-align: center;
+}
+
 h3 {
   text-align: center;
 } 
+
+h4 {
+  text-align: center;
+  color: powderblue;
+} 
+
+a {
+  color: powderblue;
+}
+
+a:active {
+  color: yellow;
+}
 
 .row {
   display: flex; 
@@ -73,7 +91,7 @@ h3 {
 
 .selected {
   opacity: 1;
-  stroke: black;
+  stroke: white;
   stroke-width: 1.5px;
 }
 
@@ -88,13 +106,22 @@ h3 {
   color: green;
 }
 
-.histo:hover {
-  fill: gainsboro;
+.histo {
+  outline: solid;
+  outline-width: 1px;
+  outline-color: white;
 }
+
+
+.histo:hover {
+  fill: black;
+  
+}
+
 
 .tooltip {
   position: absolute;
-  background-color: gainsboro;
+  background-color: black;
   border:  solid;
   border-width: 2px;
   border-radius: 5px;
@@ -106,15 +133,15 @@ h3 {
 }
 
 #star {
-  fill: royalblue;
+  fill: deepskyblue;
 }
 
 #galaxy {
-  fill: red;
+  fill: gold;
 }
 
 #qso {
-  fill: green;
+  fill: hotpink;
 }
 .text {
   font-size: 15;

@@ -69,7 +69,7 @@ function build_a_bar(brushed_data) {
   
   const color = d3.scaleOrdinal()
               .domain(["STAR", "GALAXY", "QSO" ])
-              .range([ "royalblue", "red", "green"]);
+              .range([ "deepskyblue", "gold", "hotpink"]);
 
   const y = d3.scaleBand()
     .domain(['STAR', 'GALAXY', 'QSO'])
@@ -77,7 +77,7 @@ function build_a_bar(brushed_data) {
     .padding(0.1);
 
   const x = d3.scaleLinear()
-    .domain([0, .5])
+    .domain([0, .6])
     .range([0, FRAME_WIDTH - MARGINS.left - MARGINS.right]);
 
   // Define the y axis
@@ -150,7 +150,7 @@ d3.csv("data/SDSS2.csv").then((data) => {
 
   const color = d3.scaleOrdinal()
               .domain(["STAR", "GALAXY", "QSO" ])
-              .range([ "royalblue", "red", "green"]);
+              .range([ "deepskyblue", "gold", "hotpink"]);
 
     // Add x axis
     FRAME1.append("g") 
@@ -167,7 +167,7 @@ d3.csv("data/SDSS2.csv").then((data) => {
              .call(d3.axisLeft(Y_SCALE1).tickValues([0, 50, 100, 150, 200, 245])
                                .tickFormat((d, i) => [0, 50, 100, 150, 200, 245] [i])) 
              .attr("font-size", "10px");
-             
+
     // Add legend
     function plotLegendCircle(cx, cy, cls) {
       FRAME1.append("circle")
@@ -204,7 +204,7 @@ d3.csv("data/SDSS2.csv").then((data) => {
             .attr("cy", (d) => { return (Y_SCALE1(d.ra) + MARGINS.top); }) 
             .attr("r", 3)
             .attr("fill", d => color(d.class))
-            .attr("opacity", 0.3)
+            .attr("opacity", 0.5)
             .attr("class", "point");
 
 // Add brushing
@@ -341,16 +341,16 @@ d3.csv("data/SDSS2.csv").then((data) => {
             return "violet";
           } 
     else if (band_type === "g") {
-            return "teal";
+            return "darkturquoise";
           } 
     else if (band_type === "r"){
             return "limegreen";
           }
     else if (band_type === "i"){
-            return "red";
+            return "orange";
           }
     else if (band_type === "z"){
-            return "maroon";
+            return "firebrick";
           }
     }
 
