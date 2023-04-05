@@ -16,6 +16,7 @@ h3 {
   text-align: center;
 } 
 
+
 h4 {
   text-align: center;
   color: powderblue;
@@ -27,6 +28,11 @@ a {
 
 a:active {
   color: yellow;
+}
+
+
+h5 {
+  text-align: center;
 }
 
 .row {
@@ -102,6 +108,7 @@ a:active {
 .galaxy {
   color: red;
 }
+
 .quasar {
   color: green;
 }
@@ -113,10 +120,12 @@ a:active {
 }
 
 
+
 .histo:hover {
   fill: black;
   
 }
+
 
 
 .tooltip {
@@ -147,3 +156,8 @@ a:active {
   font-size: 15;
 }
 
+.plot {
+  border: solid;
+  border-width: 2px;
+  border-color: black;
+}

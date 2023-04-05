@@ -365,7 +365,6 @@ d3.csv("data/SDSS2.csv").then((data) => {
             .attr("fill", function(d) { return getColor(d);})
             .attr("class", "histo")
 
-
 const TOOLTIP = d3.select(frame_num(band_type))
                           .append("div")
                           .attr("class", "tooltip")
