@@ -167,46 +167,32 @@ d3.csv("data/SDSS2.csv").then((data) => {
              .call(d3.axisLeft(Y_SCALE1).tickValues([0, 50, 100, 150, 200, 245])
                                .tickFormat((d, i) => [0, 50, 100, 150, 200, 245] [i])) 
              .attr("font-size", "10px");
+             
+    // Add legend
+    function plotLegendCircle(cx, cy, cls) {
+      FRAME1.append("circle")
+            .attr("cx",cx)
+            .attr("cy",cy)
+            .attr("class", "legend-circle")
+            .attr("id", cls);
+    }
 
-    // Add legend to graph
-    FRAME1.append("circle")
-            .attr("cx",60)
-            .attr("cy",60)
-            .attr("r", 5)
-            .style("fill", "royalblue");
+    function plotLegendText(cx, cy, cls, txt) {
+      FRAME1.append("text")
+            .attr("x", cx)
+            .attr("y", cy)
+            .text(txt)
+            .attr("class", "text")
+            .attr("id", cls);
+    };
 
-    FRAME1.append("text")
-            .attr("x", 70)
-            .attr("y", 65)
-            .attr("font-size", 15)
-            .attr("fill", "royalblue")
-            .text("Star");
+    plotLegendCircle(60,60,"star")
+    plotLegendCircle(60,80,"galaxy")
+    plotLegendCircle(60,100,"qso")
 
-    FRAME1.append("circle")
-            .attr("cx",60)
-            .attr("cy",80)
-            .attr("r", 5)
-            .style("fill", "red");
-
-    FRAME1.append("text")
-            .attr("x", 70)
-            .attr("y", 85)
-            .attr("font-size", 15)
-            .attr("fill", "red")
-            .text("Galaxy");
-
-    FRAME1.append("circle")
-            .attr("cx",60)
-            .attr("cy",100)
-            .attr("r", 5)
-            .style("fill", "green");
-
-    FRAME1.append("text")
-            .attr("x", 70)
-            .attr("y", 105)
-            .attr("font-size", 15)
-            .attr("fill", "green")
-            .text("Quasar");
+    plotLegendText(70,65,"star", "Star")
+    plotLegendText(70,85,"galaxy", "Galaxy")
+    plotLegendText(70,106,"qso", "Quasar")
 
 
   // Add points

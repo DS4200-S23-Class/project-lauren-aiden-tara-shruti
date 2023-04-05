@@ -101,3 +101,22 @@ h3 {
   padding: 5px;
 }
 
+.legend-circle {
+  r: 5;
+}
+
+#star {
+  fill: royalblue;
+}
+
+#galaxy {
+  fill: red;
+}
+
+#qso {
+  fill: green;
+}
+.text {
+  font-size: 15;
+}
+
