@@ -11,6 +11,9 @@ h3 {
   text-align: center;
 } 
 
+h5 {
+  text-align: center;
+}
 .row {
   display: flex; 
   flex-direction: row;
@@ -92,6 +95,12 @@ h3 {
   fill: gainsboro;
 }
 
+.histo {
+  outline: solid;
+  outline-width: 1.3px;
+  outline-color: black;
+}
+
 .tooltip {
   position: absolute;
   background-color: gainsboro;
@@ -120,3 +129,8 @@ h3 {
   font-size: 15;
 }
 
+.plot {
+  border: solid;
+  border-width: 2px;
+  border-color: black;
+}
