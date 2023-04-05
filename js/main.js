@@ -15,6 +15,7 @@ button = document.querySelector('#submit-button');
 button.addEventListener('click', setSelectedOptions);
 
 function setSelectedOptions (){
+elems = [];
 let choices = document.querySelectorAll('input:checked');
 for (let i = 0; i < choices.length; i++) {
   elems.push(choices[i].value);
@@ -54,98 +55,6 @@ const FRAME2 = d3.select("#bar")
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// function build_bar(data) {
-
-// // Read data and create bar plot
-// d3.csv("data/SDSS2.csv").then((data) => {
-
-//   d3.selectAll("bar").remove();
-
-//   // Define scale functions that maps our data x values 
-//     // (domain) to pixel values (range)
-//     const X_SCALE_CLASS = d3.scaleBand()   
-//                               .range([0, VIS_WIDTH])
-//                               .domain(data.map((d) => { return d.class; }))
-//                               .padding(0.2); 
-
-//     // Define scale functions that maps our data y values
-//     // (domain) to pixel values (range)
-//     const Y_SCALE_CLASS = d3.scaleLinear()
-//                               .domain([0,.42])
-//                                .range([VIS_HEIGHT, 0]);
-
-//     function get_redshift(d) {                          
-//     if(d.class === "STAR") {
-//             return 0.0002102389190283399;
-//           } else if (d.class === "GALAXY") {
-//             return 0.08036230192708328;
-//           } else if (d.class === "QSO"){
-//             return 0.4103186918181818;
-//           }}
-
-//     // Use X_SCALE_CLASS and Y_SCALE_CLASS to plot graph
-//     let bars = FRAME2.selectAll("bars")  
-//         .data(data) // passed from .then  
-//         .enter()       
-//         .append("rect")
-//           .attr("x", (d) => { return (X_SCALE_CLASS(d.class) + MARGINS.left); })
-//           .attr("width", X_SCALE_CLASS.bandwidth())
-//           .attr("y", (d) => { return Y_SCALE_CLASS(get_redshift(d)) + MARGINS.top})   
-//           .attr("height", (d) => {return VIS_HEIGHT - Y_SCALE_CLASS(get_redshift(d))})
-//           .attr("fill", function (d) {
-//             if(d.class === "STAR") {
-//             return "royalblue";
-//           } else if (d.class === "GALAXY") {
-//             return "red";
-//           } else {
-//             return "green";
-//           }
-//           })
-//           .append("text")
-//             .text(function(d) {                 
-//                   return d.class;
-//             })
-//          .attr("text-anchor", "middle")
-//           .attr("class", "bar");
-
-//     FRAME2.append("text")
-//             .attr("x", 100)
-//             .attr("y", 243)
-//             .attr("font-size", 10)
-//             .attr("fill", "royalblue")
-//             .text("0.0002"); 
-
-//     FRAME2.append("text")
-//             .attr("x", 210)
-//             .attr("y", 205)
-//             .attr("font-size", 10)
-//             .attr("fill", "red")
-//             .text(".0804");
-
-
-//     FRAME2.append("text")
-//             .attr("x", 320)
-//             .attr("y", 50)
-//             .attr("font-size", 10)
-//             .attr("fill", "green")
-//             .text("0.4103");
-
-//     // Add x axis to vis
-//     FRAME2.append("g") 
-//     .attr("transform", "translate(" + MARGINS.left + 
-//           "," + (VIS_HEIGHT + MARGINS.top) + ")") 
-//     .call(d3.axisBottom(X_SCALE_CLASS).ticks(3)) 
-//       .attr("font-size", '10px'); 
-
-//     // Add y axis to vis
-//     FRAME2.append("g") 
-//     .attr("transform", "translate(" + MARGINS.bottom + 
-//           "," + (MARGINS.top) + ")") 
-//     .call(d3.axisLeft(Y_SCALE_CLASS).ticks(8)) 
-//       .attr("font-size", '10px'); 
-
-// })};
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function build_a_bar(brushed_data) {
   d3.selectAll(".bars").remove();
 
@@ -207,7 +116,7 @@ function build_a_bar(brushed_data) {
 }
 
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function build_scatter(options) {
 
 // Open file
@@ -347,11 +256,8 @@ d3.csv("data/SDSS2.csv").then((data) => {
 return brushed_points};
 
 console.log(brushed_points)
-// U histogram
 
-
-
-// general function 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function build_histo_all(band_type) {
 
