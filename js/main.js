@@ -314,10 +314,9 @@ d3.csv("data/SDSS2.csv").then((data) => {
 
 // Add brushing
   FRAME1.call(d3.brush()           
-          .extent( [ [0,0], [FRAME_WIDTH, FRAME_HEIGHT] ] ) 
-          .on("start brush", updateChart) // Each time the brush selection changes, trigger the 'updateChart' function
+  .extent( [ [MARGINS.left,MARGINS.top], [FRAME_WIDTH-50, FRAME_HEIGHT-50] ] ) 
+  .on("start brush", updateChart) // Each time the brush selection changes, trigger the 'updateChart' function
   );
-
 
 //Function that is triggered when brushing is performed
  function updateChart(event) {
