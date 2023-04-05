@@ -35,6 +35,10 @@ h5 {
   text-align: center;
 }
 
+.frame {
+  align-items: center;
+}
+
 .row {
   display: flex; 
   flex-direction: row;
