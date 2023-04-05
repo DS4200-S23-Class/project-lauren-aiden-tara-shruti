@@ -53,7 +53,7 @@ h5 {
 	justify-content: space-around;
 	align-items: center;
 	align-content: center;
-}
+} 
 
 .row2 {
   display: flex; 
@@ -105,17 +105,6 @@ h5 {
   stroke-width: 1.5px;
 }
 
-.star {
-  color: royalblue;
-}
-
-.galaxy {
-  color: red;
-}
-
-.quasar {
-  color: green;
-}
 
 .histo {
   outline: solid;
@@ -129,8 +118,6 @@ h5 {
   fill: black;
   
 }
-
-
 
 .tooltip {
   position: absolute;
@@ -146,7 +133,7 @@ h5 {
 }
 
 #star {
-  fill: deepskyblue;
+  fill: red;
 }
 
 #galaxy {
@@ -154,7 +141,7 @@ h5 {
 }
 
 #qso {
-  fill: hotpink;
+  fill: deepskyblue;
 }
 .text {
   font-size: 15;

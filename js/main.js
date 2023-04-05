@@ -69,7 +69,7 @@ function build_a_bar(brushed_data) {
   
   const color = d3.scaleOrdinal()
               .domain(["STAR", "GALAXY", "QSO" ])
-              .range([ "deepskyblue", "gold", "hotpink"]);
+              .range([ "red", "gold", "deepskyblue"]);
 
   const y = d3.scaleBand()
     .domain(['STAR', 'GALAXY', 'QSO'])
@@ -150,7 +150,7 @@ d3.csv("data/SDSS2.csv").then((data) => {
 
   const color = d3.scaleOrdinal()
               .domain(["STAR", "GALAXY", "QSO" ])
-              .range([ "deepskyblue", "gold", "hotpink"]);
+              .range([ "red", "gold", "deepskyblue"]);
 
     // Add x axis
     FRAME1.append("g") 
