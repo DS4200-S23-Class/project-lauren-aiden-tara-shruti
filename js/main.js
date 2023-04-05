@@ -10,8 +10,7 @@ function displayData() {
 displayData();
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// Log the button clicks
-
+// Push selected values to array on click, attach plotting event to button
 let elems = [];
 button = document.querySelector('#submit-button');
 button.addEventListener('click', setSelectedOptions);
@@ -31,7 +30,6 @@ build_scatter(elems);
 // Initialize the list of brushed points from the scatterplot
 let brushed_points = [];
 
-
 // Constants for visualizations
 const FRAME_HEIGHT = 300;
 const FRAME_WIDTH = 450; 
@@ -39,13 +37,13 @@ const MARGINS = {left: 50, right: 50, top: 50, bottom: 50};
 const VIS_HEIGHT = FRAME_HEIGHT - MARGINS.top - MARGINS.bottom;
 const VIS_WIDTH = FRAME_WIDTH - MARGINS.left - MARGINS.right; 
 
-
 // Scatterplot Frame 
 const FRAME1 = d3.select("#scatter")
                 .append("svg")
                   .attr("height", FRAME_HEIGHT)
                   .attr("width", FRAME_WIDTH)
                   .attr("class", "frame"); 
+
 //Bar graph Frame
 const FRAME2 = d3.select("#bar")
                   .append("svg")
@@ -57,9 +55,11 @@ const FRAME2 = d3.select("#bar")
 
 // Function for the user-defined bar graph
 function build_a_bar(brushed_data) {
+  
+  // refresh plot every time function is called
   d3.selectAll(".bars").remove();
 
-
+  // create array of objects with selected classes and associated values
   const objects = brushed_data.map(d => {
     const [x, y, cls, value] = d.slice(1, -1).split(',');
     return { x: +x, y: +y, class: cls, value: +value };
@@ -74,22 +74,22 @@ function build_a_bar(brushed_data) {
               .domain(["STAR", "GALAXY", "QSO" ])
               .range([ "red", "gold", "deepskyblue"]);
 
-  // Define the x axis
-  const x = d3.scaleLinear()
+  // Define the x scale and axis
+  const X_SCALE = d3.scaleLinear()
     .domain([0, .6])
     .range([0, FRAME_WIDTH - MARGINS.left - MARGINS.right]);
   
-  const xAxis = d3.axisBottom(x)
+  const xAxis = d3.axisBottom(X_SCALE)
     .ticks(15)
     .tickFormat(d => `${d}`);
 
-  // Define the y axis
-  const y = d3.scaleBand()
+  // Define the y scale and axis
+  const Y_SCALE = d3.scaleBand()
     .domain(['STAR', 'GALAXY', 'QSO'])
     .range([0, FRAME_HEIGHT - MARGINS.top - MARGINS.bottom])
     .padding(0.1);
 
-  const yAxis = d3.axisLeft(y);
+  const yAxis = d3.axisLeft(Y_SCALE);
 
   // Append the x axis to the SVG element
   FRAME2.append("g")
@@ -112,9 +112,9 @@ function build_a_bar(brushed_data) {
     .enter()
     .append('rect')
     .attr('x', 0)
-    .attr('y', d => y(d[0]))
-    .attr('width', d => x(d[1]))
-    .attr('height', y.bandwidth())
+    .attr('y', d => Y_SCALE(d[0]))
+    .attr('width', d => X_SCALE(d[1]))
+    .attr('height', Y_SCALE.bandwidth())
     .attr('fill', d => color(d[0]));
 };
 
@@ -130,7 +130,7 @@ d3.csv("data/SDSS2.csv").then((data) => {
    // Remove the previous plot to avoid stacking
    d3.selectAll(".point").remove();
 
-  // UMMMMMMMMMMMM
+  // Filter data to include only user-selected classes  
   filteredData = [];
   for (let i = 0; i < options.length; i++) {
     const option = options[i];
@@ -219,7 +219,8 @@ d3.csv("data/SDSS2.csv").then((data) => {
   .on("start brush", updateChart) // Each time the brush selection changes, trigger the 'updateChart' function
   );
 
-//Function that is triggered when brushing is performed
+ 
+ //Function that is triggered when brushing is performed
  function updateChart(event) {
       const extent = event.selection;
       k = d3.brush();
@@ -229,7 +230,7 @@ d3.csv("data/SDSS2.csv").then((data) => {
       brushed_points = []
     };  
 
-// Function that return TRUE or FALSE according if a dot is in the selection or not
+ // Function that return TRUE or FALSE according if a dot is in the selection or not
  function isBrushed(brush_coords, cx, cy, d_x, d_y, d_class, redshift) {
   const x0 = brush_coords[0][0],
         x1 = brush_coords[1][0],
@@ -278,17 +279,16 @@ function build_histo_all(band_type) {
     const map = data.map(function (d) { return (parseInt(get_band(d, band_type)) - 13)});
 
     // Define the histogram
-
     const histogram = d3.histogram()
                         .thresholds(5)
                         (map);
 
-    const x = d3.scaleLinear()
+    const X_SCALE = d3.scaleLinear()
                 .domain([0, d3.max(map)])
                 .range([0, 280]);
 
 
-    const y = d3.scaleLinear()
+    const Y_SCALE = d3.scaleLinear()
                 .domain([0, d3.max(histogram.map(function (d) { return d.length; }))])
                 .range([VIS_HEIGHT, 0]);
 
@@ -329,14 +329,14 @@ function build_histo_all(band_type) {
     FRAME.append("g") 
               .attr("transform", "translate(" + MARGINS.left + 
               "," + (VIS_HEIGHT + MARGINS.top) + ")") 
-              .call(d3.axisBottom(x).tickValues([0, 1, 2, 3, 4, 5, 6])
+              .call(d3.axisBottom(X_SCALE).tickValues([0, 1, 2, 3, 4, 5, 6])
                                    .tickFormat((d, i) => [13, 14, 15, 16, 17, 18, 19] [i])) 
               .attr("font-size", '10px');
 
     // Add y-axis 
     FRAME.append("g")
-            .attr("transform", "translate(" +(x(0) + MARGINS.left) + "," + (MARGINS.bottom) + ")")
-            .call(d3.axisLeft(y));
+            .attr("transform", "translate(" +(X_SCALE(0) + MARGINS.left) + "," + (MARGINS.bottom) + ")")
+            .call(d3.axisLeft(Y_SCALE));
 
     // Function to return which color the histogram belongs to based off its band type
     function getColor() {
@@ -378,6 +378,7 @@ function build_histo_all(band_type) {
 
     // Change color by hovering
     function handleMouseover(event, d) {
+      
       // on mouseover, change color
       TOOLTIP.style("opacity", 1);
     };
