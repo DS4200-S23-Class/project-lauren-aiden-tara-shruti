@@ -147,7 +147,7 @@ const FRAME2 = d3.select("#bar")
 // })};
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function build_a_bar(brushed_data) {
-   d3.selectAll(".bars").remove();
+  d3.selectAll(".bars").remove();
 
   const objects = brushed_data.map(d => {
     const [x, y, cls, value] = d.slice(1, -1).split(',');
