@@ -88,9 +88,10 @@ h3 {
   color: green;
 }
 
-.bar:hover {
+.histo:hover {
   fill: gainsboro;
 }
+
 .tooltip {
   position: absolute;
   background-color: gainsboro;
