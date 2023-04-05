@@ -158,13 +158,17 @@ function build_a_bar(brushed_data) {
   const groups = d3.group(objects, d => d.class);
   const means = new Map([...groups].map(([cls, objects]) => [cls, d3.mean(objects, d => d.value)]));
   
+  const color = d3.scaleOrdinal()
+              .domain(["STAR", "GALAXY", "QSO" ])
+              .range([ "royalblue", "red", "green"]);
+
   const y = d3.scaleBand()
     .domain(['STAR', 'GALAXY', 'QSO'])
     .range([0, FRAME_HEIGHT - MARGINS.top - MARGINS.bottom])
     .padding(0.1);
 
   const x = d3.scaleLinear()
-    .domain([0, d3.max([...means.values()])])
+    .domain([0, .5])
     .range([0, FRAME_WIDTH - MARGINS.left - MARGINS.right]);
 
   // Define the y axis
@@ -178,7 +182,7 @@ function build_a_bar(brushed_data) {
 
   // Define the x axis
   const xAxis = d3.axisBottom(x)
-    .ticks(5)
+    .ticks(15)
     .tickFormat(d => `${d}`);
 
   // Append the x axis to the SVG element
@@ -199,7 +203,7 @@ function build_a_bar(brushed_data) {
     .attr('y', d => y(d[0]))
     .attr('width', d => x(d[1]))
     .attr('height', y.bandwidth())
-    .attr('fill', d => COLOR_SCALE(d[0]));
+    .attr('fill', d => color(d[0]));
 }
 
 
