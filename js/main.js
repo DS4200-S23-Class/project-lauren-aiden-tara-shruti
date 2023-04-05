@@ -11,6 +11,7 @@ displayData();
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Log the button clicks
+
 let elems = [];
 button = document.querySelector('#submit-button');
 button.addEventListener('click', setSelectedOptions);
@@ -277,7 +278,8 @@ function build_histo_all(band_type) {
     // Subtract 13 to remove white space from histogram on x axis
     const map = data.map(function (d) { return (parseInt(get_band(d, band_type)) - 13)});
 
-    // Define the histogram 
+    // Define the histogram
+
     const histogram = d3.histogram()
                         .thresholds(5)
                         (map);
@@ -367,6 +369,8 @@ function build_histo_all(band_type) {
               .attr("height", function (d) { return VIS_HEIGHT - y(d.length); })
               .attr("fill", function(d) { return getColor(d);})
               .attr("class", "histo");
+
+    // Adding tooltip when you hover over the histogram
 
     const TOOLTIP = d3.select(frame_num(band_type))
                             .append("div")
