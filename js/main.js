@@ -1,35 +1,34 @@
-// Display Data
+// Display data in the console
 function displayData() {
   // Read data 
   d3.csv("data/SDSS2.csv", fileEncoding="UTF-8-BOM").then((data) => {
   
     // check for our data
     //console.log(data);
-  })}
+  })};
 
 displayData();
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// Log the button clicks
 let elems = [];
 button = document.querySelector('#submit-button');
 button.addEventListener('click', setSelectedOptions);
 
+// Function to grab all the boxes that are checked and build the scatter plot with those points
 function setSelectedOptions (){
 elems = [];
 let choices = document.querySelectorAll('input:checked');
 for (let i = 0; i < choices.length; i++) {
   elems.push(choices[i].value);
 }
-console.log(elems)
 build_scatter(elems);
-//build_bar(elems);
-//build_bar(brushed_points);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// Initialize the list of brushed points from the scatterplot
 let brushed_points = [];
-classes = ["STAR", "GALAXY", "QSO" ];
 
 
 // Constants for visualizations
@@ -40,13 +39,13 @@ const VIS_HEIGHT = FRAME_HEIGHT - MARGINS.top - MARGINS.bottom;
 const VIS_WIDTH = FRAME_WIDTH - MARGINS.left - MARGINS.right; 
 
 
-// Scatterplot
+// Scatterplot Frame
 const FRAME1 = d3.select("#scatter")
                 .append("svg")
                   .attr("height", FRAME_HEIGHT)
                   .attr("width", FRAME_WIDTH)
                   .attr("class", "frame"); 
-//Bar graph 
+//Bar graph Frame
 const FRAME2 = d3.select("#bar")
                   .append("svg")
                   .attr("height", FRAME_HEIGHT)
@@ -55,8 +54,10 @@ const FRAME2 = d3.select("#bar")
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// Function for the user-defined bar graph
 function build_a_bar(brushed_data) {
   d3.selectAll(".bars").remove();
+
 
   const objects = brushed_data.map(d => {
     const [x, y, cls, value] = d.slice(1, -1).split(',');
@@ -67,21 +68,33 @@ function build_a_bar(brushed_data) {
   const groups = d3.group(objects, d => d.class);
   const means = new Map([...groups].map(([cls, objects]) => [cls, d3.mean(objects, d => d.value)]));
   
+  // Set a color scale to be used
   const color = d3.scaleOrdinal()
               .domain(["STAR", "GALAXY", "QSO" ])
               .range([ "red", "gold", "deepskyblue"]);
 
+  // Define the x axis
+  const x = d3.scaleLinear()
+    .domain([0, .6])
+    .range([0, FRAME_WIDTH - MARGINS.left - MARGINS.right]);
+  
+  const xAxis = d3.axisBottom(x)
+    .ticks(15)
+    .tickFormat(d => `${d}`);
+
+  // Define the y axis
   const y = d3.scaleBand()
     .domain(['STAR', 'GALAXY', 'QSO'])
     .range([0, FRAME_HEIGHT - MARGINS.top - MARGINS.bottom])
     .padding(0.1);
 
-  const x = d3.scaleLinear()
-    .domain([0, .6])
-    .range([0, FRAME_WIDTH - MARGINS.left - MARGINS.right]);
-
-  // Define the y axis
   const yAxis = d3.axisLeft(y);
+
+  // Append the x axis to the SVG element
+  FRAME2.append("g")
+    .attr("class", "x-axis")
+    .attr("transform", `translate(${MARGINS.left}, ${FRAME_HEIGHT - MARGINS.bottom})`)
+    .call(xAxis);
 
   // Append the y axis to the SVG element
   FRAME2.append("g")
@@ -89,16 +102,6 @@ function build_a_bar(brushed_data) {
     .attr("transform", `translate(${MARGINS.left}, ${MARGINS.top})`)
     .call(yAxis);
 
-  // Define the x axis
-  const xAxis = d3.axisBottom(x)
-    .ticks(15)
-    .tickFormat(d => `${d}`);
-
-  // Append the x axis to the SVG element
-  FRAME2.append("g")
-    .attr("class", "x-axis")
-    .attr("transform", `translate(${MARGINS.left}, ${FRAME_HEIGHT - MARGINS.bottom})`)
-    .call(xAxis);
 
   // Add the bars to the chart
   FRAME2.append('g')
@@ -113,18 +116,21 @@ function build_a_bar(brushed_data) {
     .attr('width', d => x(d[1]))
     .attr('height', y.bandwidth())
     .attr('fill', d => color(d[0]));
-}
+};
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Function for the user-defined scatter plot
 function build_scatter(options) {
 
 // Open file
 d3.csv("data/SDSS2.csv").then((data) => {
-  
+   
+   // Remove the previous plot to avoid stacking
    d3.selectAll(".point").remove();
 
-  // console.log(options[0])
+  // UMMMMMMMMMMMM
   filteredData = [];
   for (let i = 0; i < options.length; i++) {
     const option = options[i];
@@ -132,10 +138,10 @@ d3.csv("data/SDSS2.csv").then((data) => {
       return row['class'] === option;
     });
     filteredData.push(...filtered);
-  }
+  };
 
 
-
+  // Define x and y constants to be used for axes
   const MAX_X1 = d3.max(data, (d) => { return parseInt(d.dec); });
   const MAX_Y1 = d3.max(data, (d) => { return parseInt(d.ra); });
 
@@ -147,7 +153,7 @@ d3.csv("data/SDSS2.csv").then((data) => {
                       .domain([0, (MAX_Y1 + 1)]) 
                       .range([VIS_HEIGHT, 0]);
 
-
+  // Set color scale
   const color = d3.scaleOrdinal()
               .domain(["STAR", "GALAXY", "QSO" ])
               .range([ "red", "gold", "deepskyblue"]);
@@ -175,7 +181,7 @@ d3.csv("data/SDSS2.csv").then((data) => {
             .attr("cy",cy)
             .attr("class", "legend-circle")
             .attr("id", cls);
-    }
+    };
 
     function plotLegendText(cx, cy, cls, txt) {
       FRAME1.append("text")
@@ -186,13 +192,13 @@ d3.csv("data/SDSS2.csv").then((data) => {
             .attr("id", cls);
     };
 
-    plotLegendCircle(60,60,"star")
-    plotLegendCircle(60,80,"galaxy")
-    plotLegendCircle(60,100,"qso")
+    plotLegendCircle(60,60,"star");
+    plotLegendCircle(60,80,"galaxy");
+    plotLegendCircle(60,100,"qso");
 
-    plotLegendText(70,65,"star", "Star")
-    plotLegendText(70,85,"galaxy", "Galaxy")
-    plotLegendText(70,106,"qso", "Quasar")
+    plotLegendText(70,65,"star", "Star");
+    plotLegendText(70,85,"galaxy", "Galaxy");
+    plotLegendText(70,106,"qso", "Quasar");
 
 
   // Add points
@@ -207,7 +213,7 @@ d3.csv("data/SDSS2.csv").then((data) => {
             .attr("opacity", 0.5)
             .attr("class", "point");
 
-// Add brushing
+  // Add brushing
   FRAME1.call(d3.brush()           
   .extent( [ [MARGINS.left,MARGINS.top], [FRAME_WIDTH-50, FRAME_HEIGHT-50] ] ) 
   .on("start brush", updateChart) // Each time the brush selection changes, trigger the 'updateChart' function
@@ -217,185 +223,182 @@ d3.csv("data/SDSS2.csv").then((data) => {
  function updateChart(event) {
       const extent = event.selection;
       k = d3.brush();
-      pts1.classed("selected", function(d) {return isBrushed(extent, (X_SCALE1(d.dec) + MARGINS.left), (Y_SCALE1(d.ra) + MARGINS.top), d.dec, d. ra, d.class, d.redshift)}) 
-      //hist1.classed("selected", function(d) {return isBrushed(extent, (X_SCALE1(d.dec) + MARGINS.left), (Y_SCALE1(d.ra) + MARGINS.top), d.dec, d.ra, d.class, d.redshift)})
+      pts1.classed("selected", function(d) {return isBrushed(extent, (X_SCALE1(d.dec) + MARGINS.left), (Y_SCALE1(d.ra) + MARGINS.top), d.dec, d. ra, d.class, d.redshift)});
       console.log(brushed_points);
       build_a_bar(brushed_points);
-      brushed_points = []}  
+      brushed_points = []
+    };  
 
-// A function that return TRUE or FALSE according if a dot is in the selection or not
+// Function that return TRUE or FALSE according if a dot is in the selection or not
  function isBrushed(brush_coords, cx, cy, d_x, d_y, d_class, redshift) {
-    //brushed_points = [] 
-     const x0 = brush_coords[0][0],
+  const x0 = brush_coords[0][0],
         x1 = brush_coords[1][0],
         y0 = brush_coords[0][1],
         y1 = brush_coords[1][1];
+  if (x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1) {
+    brushed_points.push("(" + d_x + "," + d_y + "," + d_class + "," + redshift + ")");
+  };
 
-        if (x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1) {
-         brushed_points.push("(" + d_x + "," + d_y + "," + d_class + "," + redshift + ")");
-         };
-          
-      
-    return brushed_points, x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1};   // This return TRUE or FALSE depending on if the points is in the selected area
-    //console.log(brushed_points);
-})
-return brushed_points};
+  return brushed_points, x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1};  // This returns TRUE or FALSE depending on if the points is in the selected area
 
-console.log(brushed_points)
+})};
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// Function for the telescope band histograms
 function build_histo_all(band_type) {
 
-const padding = 50
+  // Set padding to be used for making the visualizations
+  const padding = 50
 
-d3.csv("data/SDSS2.csv").then((data) => {
+  d3.csv("data/SDSS2.csv").then((data) => {
 
+    // Function to return which id the histogram belongs to based off its band type
+    function  get_band(d, band_type){
+      if(band_type === "u") {
+              return d.u;
+            } 
+      else if (band_type === "g") {
+              return d.g;
+            } 
+      else if (band_type === "r"){
+              return d.r;
+            }
+      else if (band_type === "i"){
+              return d.i;
+            }
+      else if (band_type === "z"){
+              return d.z;
+            }
+    };
 
+    // Map is a constant that will grab all the bands
+    // Subtract 13 to remove white space from histogram on x axis
+    const map = data.map(function (d) { return (parseInt(get_band(d, band_type)) - 13)});
 
-   function  get_band(d, band_type){
-    if(band_type === "u") {
-            return d.u;
-          } 
-    else if (band_type === "g") {
-            return d.g;
-          } 
-    else if (band_type === "r"){
-            return d.r;
-          }
-    else if (band_type === "i"){
-            return d.i;
-          }
-    else if (band_type === "z"){
-            return d.z;
-          }
-    }
-  
-  // Subtract 13 to remove white space from histogram on x axis
-  const map = data.map(function (d) { return (parseInt(get_band(d, band_type)) - 13)})
+    // Define the histogram 
+    const histogram = d3.histogram()
+                        .thresholds(5)
+                        (map);
 
-
-  const histogram = d3.histogram()
-                      .thresholds(5)
-                      (map)
-
-  const x = d3.scaleLinear()
-              .domain([0, d3.max(map)])
-              .range([0, 280]);
-
-
-  const y = d3.scaleLinear()
-              .domain([0, d3.max(histogram.map(function (d) { return d.length; }))])
-              .range([VIS_HEIGHT, 0]);
+    const x = d3.scaleLinear()
+                .domain([0, d3.max(map)])
+                .range([0, 280]);
 
 
-  function frame_num(band_type){
-    if(band_type === "u") {
-            return "#histo1";
-          } 
-    else if (band_type === "g") {
-            return "#histo2";
-          } 
-    else if (band_type === "r"){
-            return "#histo3";
-          }
-    else if (band_type === "i"){
-            return "#histo4";
-          }
-    else if (band_type === "z"){
-            return "#histo5";
-          }
-    }
+    const y = d3.scaleLinear()
+                .domain([0, d3.max(histogram.map(function (d) { return d.length; }))])
+                .range([VIS_HEIGHT, 0]);
+
+    // Function to return which id the histogram belongs to based off its band type
+    function frame_num(band_type){
+      if(band_type === "u") {
+              return "#histo1";
+            } 
+      else if (band_type === "g") {
+              return "#histo2";
+            } 
+      else if (band_type === "r"){
+              return "#histo3";
+            }
+      else if (band_type === "i"){
+              return "#histo4";
+            }
+      else if (band_type === "z"){
+              return "#histo5";
+            }
+      };
+
+     // Define the frame the histogram will be slotted into
+     const FRAME = d3.select(frame_num(band_type))
+                    .append("svg")
+                    .attr("height", FRAME_HEIGHT)
+                    .attr("width", 380)
+                    .attr("class", "frame");
+
+              
+    FRAME.select(frame_num(band_type))
+            .append("svg")
+            .attr("width", 380)
+            .attr("height", VIS_HEIGHT + padding);
 
 
-   const FRAME = d3.select(frame_num(band_type))
-                  .append("svg")
-                  .attr("height", FRAME_HEIGHT)
-                  .attr("width", 380)
-                  .attr("class", "frame");
+    // Add x-axis and relabel ticks to make depiction of data accurate, from subtracting 13 earlier
+    FRAME.append("g") 
+              .attr("transform", "translate(" + MARGINS.left + 
+              "," + (VIS_HEIGHT + MARGINS.top) + ")") 
+              .call(d3.axisBottom(x).tickValues([0, 1, 2, 3, 4, 5, 6])
+                                   .tickFormat((d, i) => [13, 14, 15, 16, 17, 18, 19] [i])) 
+              .attr("font-size", '10px');
 
-            
-  FRAME.select(frame_num(band_type))
-          .append("svg")
-          .attr("width", 380)
-          .attr("height", VIS_HEIGHT + padding)
+    // Add y-axis 
+    FRAME.append("g")
+            .attr("transform", "translate(" +(x(0) + MARGINS.left) + "," + (MARGINS.bottom) + ")")
+            .call(d3.axisLeft(y));
 
+    // Function to return which color the histogram belongs to based off its band type
+    function getColor() {
+     if(band_type === "u") {
+              return "violet";
+            } 
+      else if (band_type === "g") {
+              return "darkturquoise";
+            } 
+      else if (band_type === "r"){
+              return "limegreen";
+            }
+      else if (band_type === "i"){
+              return "orange";
+            }
+      else if (band_type === "z"){
+              return "firebrick";
+            }
+      };
 
-  // Add x axis and relabel ticks to make depiction of data accurate, from subtracting 13 earlier
-  FRAME.append("g") 
-            .attr("transform", "translate(" + MARGINS.left + 
-            "," + (VIS_HEIGHT + MARGINS.top) + ")") 
-            .call(d3.axisBottom(x).tickValues([0, 1, 2, 3, 4, 5, 6])
-                                 .tickFormat((d, i) => [13, 14, 15, 16, 17, 18, 19] [i])) 
-            .attr("font-size", '10px');
+    // Append bars to the histogram
+    hist1 = FRAME.selectAll(".bar")
+            .data(histogram)
+            .enter()
+            .append("rect")
+              .attr("x", function (d) { return (x(d.x1-(d.x1-d.x0))) + MARGINS.left;})
+              .attr("y", function (d) { return  (y(d.length)) + MARGINS.top; })
+              .attr("width", function (d) { return x(d.x1-d.x0); })
+              .attr("height", function (d) { return VIS_HEIGHT - y(d.length); })
+              .attr("fill", function(d) { return getColor(d);})
+              .attr("class", "histo");
 
-// y axis 
+    const TOOLTIP = d3.select(frame_num(band_type))
+                            .append("div")
+                            .attr("class", "tooltip")
+                            .style("opacity", 0);
 
-  FRAME.append("g")
-          .attr("transform", "translate(" +(x(0) + MARGINS.left) + "," + (MARGINS.bottom) + ")")
-          .call(d3.axisLeft(y));
+    // Change color by hovering
+    function handleMouseover(event, d) {
+      // on mouseover, change color
+      TOOLTIP.style("opacity", 1);
+    };
 
-
-  function getColor() {
-   if(band_type === "u") {
-            return "violet";
-          } 
-    else if (band_type === "g") {
-            return "darkturquoise";
-          } 
-    else if (band_type === "r"){
-            return "limegreen";
-          }
-    else if (band_type === "i"){
-            return "orange";
-          }
-    else if (band_type === "z"){
-            return "firebrick";
-          }
-    }
-
- hist1 = FRAME.selectAll(".bar")
-          .data(histogram)
-          .enter()
-          .append("rect")
-            .attr("x", function (d) { return (x(d.x1-(d.x1-d.x0))) + MARGINS.left;})
-            .attr("y", function (d) { return  (y(d.length)) + MARGINS.top; })
-            .attr("width", function (d) { return x(d.x1-d.x0); })
-            .attr("height", function (d) { return VIS_HEIGHT - y(d.length); })
-            .attr("fill", function(d) { return getColor(d);})
-            .attr("class", "histo")
-
-const TOOLTIP = d3.select(frame_num(band_type))
-                          .append("div")
-                          .attr("class", "tooltip")
-                          .style("opacity", 0);
-
-
-      // Change color by hovering
-      function handleMouseover(event, d) {
-        // on mouseover, change color
-        TOOLTIP.style("opacity", 1);
-      }
-
-      // Show value of each bar with tooltip
-      function handleMousemove(event, d) {
-      TOOLTIP.html("Count: " + d.length + " out of 450" + " (" 
+    // Show value of each bar with tooltip
+    function handleMousemove(event, d) {
+    TOOLTIP.html("Count: " + d.length + " out of 450" + " (" 
                   + Math.round(((d.length/450)*100 + Number.EPSILON) * 100) / 100 + "%)")  // Math function rounds to two decimals
-              .style("left", (event.pageX + 10) + "px")                                          
-              .style("top", (event.pageY - 50) + "px"); 
-      }
+            .style("left", (event.pageX + 10) + "px")                                          
+            .style("top", (event.pageY - 50) + "px"); 
+    };
 
-      function handleMouseleave(event, d) {
-        TOOLTIP.style("opacity", 0);
-      }
+    function handleMouseleave(event, d) {
+      TOOLTIP.style("opacity", 0);
+    };
 
-
-      FRAME.selectAll(".histo")
-            .on("mouseover", handleMouseover) 
-            .on("mousemove", handleMousemove)
-            .on("mouseleave", handleMouseleave); //add event listeners
+    // Add event listeners
+    FRAME.selectAll(".histo")
+          .on("mouseover", handleMouseover) 
+          .on("mousemove", handleMousemove)
+          .on("mouseleave", handleMouseleave); 
 })};
 
+// Call the function to build all the histograms
 build_histo_all("g");
 build_histo_all("u");
 build_histo_all("r");
